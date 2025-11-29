@@ -1,6 +1,6 @@
-/****************************************************************************
+ï»¿/****************************************************************************
  *
- * Ê¹ÓÃ¹¤³§Ä£Ê½ºÍ¶ÔÏó³ØÄ£Ê½ºÍ¹Û²ìÕßÄ£Ê½ÖØ¹¹ºóµÄ´úÂë
+ * ä½¿ç”¨å·¥å‚æ¨¡å¼å’Œå¯¹è±¡æ± æ¨¡å¼å’Œè§‚å¯Ÿè€…æ¨¡å¼é‡æ„åçš„ä»£ç 
  *
  ****************************************************************************/
 #include "Crop.h"
@@ -8,9 +8,9 @@
 #include "intovalley.h"
 #include "GameTimeSystem.h"
 #include "Plantingcrops.h"
-// ==================== Ê¹ÓÃ¹Û²ìÕßÄ£Ê½ÖØ¹¹ĞÂÔö ====================
-#include "EventCenter.h"   // ĞÂÔö
-#include "EventType.h"     // ĞÂÔö
+// ==================== ä½¿ç”¨è§‚å¯Ÿè€…æ¨¡å¼é‡æ„æ–°å¢ ====================
+#include "EventCenter.h"   // æ–°å¢
+#include "EventType.h"     // æ–°å¢
 
 USING_NS_CC;
 
@@ -51,72 +51,72 @@ bool Crop::init(const std::string& filename)
     return true;
 }
 
-// ==================== ¶ÔÏó³ØÄ£Ê½£ºĞÂÔöresetState ====================
+// ==================== å¯¹è±¡æ± æ¨¡å¼ï¼šæ–°å¢resetState ====================
 /**
-* ×÷Îï×´Ì¬ÖØÖÃ£¨ÓÃÓÚ¸´ÓÃ£©
+* ä½œç‰©çŠ¶æ€é‡ç½®ï¼ˆç”¨äºå¤ç”¨ï¼‰
 */
 void Crop::resetState() {
-    // ÖØÖÃÉú³¤×´Ì¬²ÎÊı
+    // é‡ç½®ç”Ÿé•¿çŠ¶æ€å‚æ•°
     state = State::seed;
     growthTime = 0;
     pregrowthTime = 0;
     watered = false;
 
-    // ÖØÖÃÊÓ¾õ±íÏÖ£¨»Ö¸´ÖÖ×ÓÎÆÀí£©
+    // é‡ç½®è§†è§‰è¡¨ç°ï¼ˆæ¢å¤ç§å­çº¹ç†ï¼‰
     this->setTexture("plant/cropseed.png");
     this->setVisible(true);
 
-    // Í£Ö¹ËùÓĞ¶¯×÷²¢ÖØĞÂ¿ªÆô¸üĞÂ£¨È·±£Éú³¤Âß¼­Õı³££©
+    // åœæ­¢æ‰€æœ‰åŠ¨ä½œå¹¶é‡æ–°å¼€å¯æ›´æ–°ï¼ˆç¡®ä¿ç”Ÿé•¿é€»è¾‘æ­£å¸¸ï¼‰
     this->stopAllActions();
     if (!this->isScheduledUpdate()) {
         this->scheduleUpdate();
     }
 }
 
-// ==================== Ê¹ÓÃ¹Û²ìÕßÄ£Ê½ÖØ¹¹ºóµÄupdateº¯Êı ====================
+// ==================== ä½¿ç”¨è§‚å¯Ÿè€…æ¨¡å¼é‡æ„åçš„updateå‡½æ•° ====================
  
 
 void Crop::update(float delta) {
-    // 1£©Î´½½Ë®£¬³¬¹ı 2 ±¶³ÉÊìÊ±¼äÖ±½ÓËÀÍö
+    // 1ï¼‰æœªæµ‡æ°´ï¼Œè¶…è¿‡ 2 å€æˆç†Ÿæ—¶é—´ç›´æ¥æ­»äº¡
     if (growthTime >= matureTime * 2 && state != State::harvested
         && watered == false) {
         this->setTexture("plant/cropdead.png");
         state = State::dead;
 
-        // ¡ï ĞÂÔö£ºÍ¨Öª¡°×÷ÎïËÀÍö¡±ÊÂ¼ş
+        // â˜… æ–°å¢ï¼šé€šçŸ¥â€œä½œç‰©æ­»äº¡â€äº‹ä»¶
         EventCenter::getInstance()->publish(EventType::CropDead, this);
     }
 
-    // 2£©ÖÖ×Ó½×¶Î -> ·¢Ñ¿(growing)
+    // 2ï¼‰ç§å­é˜¶æ®µ -> å‘èŠ½(growing)
     if (state == State::seed) {
         growthTime += delta;
         if (growthTime >= matureTime) {
             state = State::growing;
             this->setTexture("plant/cropgrowing.png");
 
-            // ¡ï ĞÂÔö£ºÍ¨Öª¡°×÷Îï·¢Ñ¿¡±ÊÂ¼ş
+            // â˜… æ–°å¢ï¼šé€šçŸ¥â€œä½œç‰©å‘èŠ½â€äº‹ä»¶
             EventCenter::getInstance()->publish(EventType::CropGerminated, this);
         }
     }
-    // 3£©Éú³¤ÆÚ -> ³ÉÊì(matured)
+    // 3ï¼‰ç”Ÿé•¿æœŸ -> æˆç†Ÿ(matured)
     else if (state == State::growing) {
         growthTime += delta;
         if (growthTime >= matureTime * 2) {
             state = State::matured;
             this->setTexture("plant/cropmature.png");
 
-            // ¡ï ĞÂÔö£ºÍ¨Öª¡°×÷Îï³ÉÊì¡±ÊÂ¼ş
+            // â˜… æ–°å¢ï¼šé€šçŸ¥â€œä½œç‰©æˆç†Ÿâ€äº‹ä»¶
             EventCenter::getInstance()->publish(EventType::CropMatured, this);
         } 
     }
-    // 4£©³ÉÊì½×¶Î -> ÓâÆÚÎ´±»ÊÕ»ñ¶ø±»ÏµÍ³×Ô¶¯»ØÊÕ
+    // 4ï¼‰æˆç†Ÿé˜¶æ®µ -> é€¾æœŸæœªè¢«æ”¶è·è€Œè¢«ç³»ç»Ÿè‡ªåŠ¨å›æ”¶
     else if (state == State::matured) {
         growthTime += delta;
         if (growthTime >= matureTime * 3) {
             state = State::harvested;
             this->setTexture("plant/cropharvested.png");
 
-            // ¡ï ĞÂÔö£ºÍ¨Öª¡°×÷ÎïÒÑÊÕ»ñ(×Ô¶¯½áÊøÉúÃüÖÜÆÚ)¡±ÊÂ¼ş
+            // â˜… æ–°å¢ï¼šé€šçŸ¥â€œä½œç‰©å·²æ”¶è·(è‡ªåŠ¨ç»“æŸç”Ÿå‘½å‘¨æœŸ)â€äº‹ä»¶
             EventCenter::getInstance()->publish(EventType::CropHarvested, this);
         }
     }
@@ -135,12 +135,12 @@ void Crop::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
         watered = true;
 }
 
-// ==================== ¶ÔÏó³ØÄ£Ê½£ºĞÂÔöharvest ====================
+// ==================== å¯¹è±¡æ± æ¨¡å¼ï¼šæ–°å¢harvest ====================
 /**
-* ×÷ÎïÊÕ»ñÓë»ØÊÕ
+* ä½œç‰©æ”¶è·ä¸å›æ”¶
 */
-// ==================== ¹Û²ìÕßÄ£Ê½£ºĞÂÔöÊÖ¶¯ÊÕ»ñÊÂ¼ş ====================
-//²¹È«ÏµÍ³È±Ê§µÄºËĞÄÊÂ¼şÍ¨Â·£¬Ê¹Íâ²¿Ä£¿éÄÜ¸ĞÖª¡°×÷Îï±»ÊÕ»ñ¡±ÕâÒ»¹Ø¼üĞĞÎª¡£
+// ==================== è§‚å¯Ÿè€…æ¨¡å¼ï¼šæ–°å¢æ‰‹åŠ¨æ”¶è·äº‹ä»¶ ====================
+//è¡¥å…¨ç³»ç»Ÿç¼ºå¤±çš„æ ¸å¿ƒäº‹ä»¶é€šè·¯ï¼Œä½¿å¤–éƒ¨æ¨¡å—èƒ½æ„ŸçŸ¥â€œä½œç‰©è¢«æ”¶è·â€è¿™ä¸€å…³é”®è¡Œä¸ºã€‚
 void Crop::harvest()
 {
     if (state == State::harvested || state == State::dead) {
@@ -151,16 +151,16 @@ void Crop::harvest()
         Vec2 grid(gridX, gridY);
         cropPositions[grid] = false;
 
-        // ¡ï ĞÂÔö£ºÊÖ¶¯ÊÕ»ñÊÂ¼ş
+        // â˜… æ–°å¢ï¼šæ‰‹åŠ¨æ”¶è·äº‹ä»¶
         EventCenter::getInstance()->publish(EventType::CropHarvested, this);
 
         this->removeFromParent();
-        // ÊÕ»ñºó»ØÊÕµ½¶ÔÏó³Ø£¨¶ø·ÇÖ±½ÓÏú»Ù£©
-        recycleCrop(this); // µ÷ÓÃ¶ÔÏó³ØµÄ»ØÊÕº¯Êı
+        // æ”¶è·åå›æ”¶åˆ°å¯¹è±¡æ± ï¼ˆè€Œéç›´æ¥é”€æ¯ï¼‰
+        recycleCrop(this); // è°ƒç”¨å¯¹è±¡æ± çš„å›æ”¶å‡½æ•°
     }
 }
 
-// ==================== ¹¤³§Ä£Ê½: ĞÂÔöCropFactory ====================
+// ==================== å·¥å‚æ¨¡å¼: æ–°å¢CropFactory ====================
 Crop* CropFactory::createCrop(const std::string& cropType)
 {
     auto crop = Crop::create();
@@ -186,14 +186,14 @@ Crop* CropFactory::createCrop(const std::string& cropType)
     return crop;
 }
 
-// ==================== ¹¤³§Ä£Ê½£ºĞÂÔöconfigureCrop ====================
+// ==================== å·¥å‚æ¨¡å¼ï¼šæ–°å¢configureCrop ====================
 /**
-* ×÷ÎïÅäÖÃ£¨ÓÃÓÚ¶ÔÏó³Ø¸´ÓÃ³õÊ¼»¯£©
+* ä½œç‰©é…ç½®ï¼ˆç”¨äºå¯¹è±¡æ± å¤ç”¨åˆå§‹åŒ–ï¼‰
 */
 void CropFactory::configureCrop(Crop* crop, const std::string& cropType) {
     if (!crop) return;
 
-    crop->resetState(); // ÏÈÖØÖÃ×´Ì¬£¬ÔÙÅäÖÃÀàĞÍÊôĞÔ
+    crop->resetState(); // å…ˆé‡ç½®çŠ¶æ€ï¼Œå†é…ç½®ç±»å‹å±æ€§
     if (cropType == "wheat") {
         crop->setInitialTexture("plant/wheat_seed.png");
         crop->setMatureTime(3.0);

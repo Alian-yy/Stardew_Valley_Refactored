@@ -1,4 +1,4 @@
-#ifndef _MENU_H_
+ï»¿#ifndef _MENU_H_
 #define _MENU_H_
 #include"cocostudio/CocoStudio.h"
 #include"ui/CocosGUI.h"
@@ -22,11 +22,11 @@ public:
     void onButtonPressed(Ref* pSender, Widget::TouchEventType type);
     void onSliderValueChanged(Ref* sender, Slider::EventType type);
    
-    // °´Å¥µã»÷»Øµ÷º¯Êı
+    // æŒ‰é’®ç‚¹å‡»å›è°ƒå‡½æ•°
     void onLeftButtonClicked(Ref* sender);
     void onRightButtonClicked(Ref* sender);
 
-    // ½ÇÉ«´´½¨°´Å¥µÄ»Øµ÷
+    // è§’è‰²åˆ›å»ºæŒ‰é’®çš„å›è°ƒ
     void onCreateCharacter(Ref* sender);
 
 
@@ -35,8 +35,8 @@ public:
 private:
     RadioButtonGroup* radioButtonGroup;
     RadioButtonGroup* radioButtongenderGroup;
-    int selectedMapIndex = -1; // ³õÊ¼»¯ÎªÎŞĞ§Öµ
-    int selectedGenderIndex = -1; // ³õÊ¼»¯ÎªÎŞĞ§Öµ
+    int selectedMapIndex = -1; // åˆå§‹åŒ–ä¸ºæ— æ•ˆå€¼
+    int selectedGenderIndex = -1; // åˆå§‹åŒ–ä¸ºæ— æ•ˆå€¼
     bool _isLayerVisible;
     ImageView* _backImage;
     Label* music1=nullptr;
@@ -44,8 +44,8 @@ private:
     Button* bottom=nullptr;
     Slider* part;
 
-    MenuItemImage* leftButton;    // ×ó²à°´Å¥
-    MenuItemImage* rightButton;   // ÓÒ²à°´Å¥
+    MenuItemImage* leftButton;    // å·¦ä¾§æŒ‰é’®
+    MenuItemImage* rightButton;   // å³ä¾§æŒ‰é’®
 
 
    

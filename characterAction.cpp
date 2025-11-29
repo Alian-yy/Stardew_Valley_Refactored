@@ -1,7 +1,7 @@
-/****************************************************************************
-* Ê¹ÓÃÉú³ÉÆ÷Ä£Ê½ºÍ¶ÔÏó³ØÄ£Ê½µÄ½ÇÉ«ÊµÏÖ´úÂë
-* CharacterWithTools.cpp - ½ÇÉ«¹¦ÄÜÊµÏÖ
-* ÊµÏÖ½ÇÉ«¶¯»­¹¹½¨¡¢¹¤¾ßÊ¹ÓÃ¡¢×÷ÎïÖÖÖ²µÈ¹¦ÄÜ£¬½áºÏ¶ÔÏó³ØÓÅ»¯×ÊÔ´¹ÜÀí
+ï»¿/****************************************************************************
+* ä½¿ç”¨ç”Ÿæˆå™¨æ¨¡å¼å’Œå¯¹è±¡æ± æ¨¡å¼çš„è§’è‰²å®ç°ä»£ç 
+* CharacterWithTools.cpp - è§’è‰²åŠŸèƒ½å®ç°
+* å®ç°è§’è‰²åŠ¨ç”»æ„å»ºã€å·¥å…·ä½¿ç”¨ã€ä½œç‰©ç§æ¤ç­‰åŠŸèƒ½ï¼Œç»“åˆå¯¹è±¡æ± ä¼˜åŒ–èµ„æºç®¡ç†
 ****************************************************************************/
 #include "characterAciton.h"
 #include "outside.h"
@@ -45,7 +45,7 @@ bool CharacterWithTools::init(const std::string& filename) {
 
     velocity = Vec2::ZERO;
 
-    // ========== Éú³ÉÆ÷Ä£Ê½£ºÊ¹ÓÃ AnimationBuilder ¹¹½¨¶¯»­ ==========
+    // ========== ç”Ÿæˆå™¨æ¨¡å¼ï¼šä½¿ç”¨ AnimationBuilder æ„å»ºåŠ¨ç”» ==========
     walkLeftAnimation = AnimationBuilder().from("character/Danaleft").frames(1, 3).delay(0.1f).build();
     walkLeftAnimate = Animate::create(walkLeftAnimation); walkLeftAnimate->retain();
 
@@ -58,7 +58,7 @@ bool CharacterWithTools::init(const std::string& filename) {
     walkDownAnimation = AnimationBuilder().from("character/Dana").frames(1, 3).delay(0.1f).build();
     walkDownAnimate = Animate::create(walkDownAnimation); walkDownAnimate->retain();
 
-    // ¼üÅÌÊÂ¼ş
+    // é”®ç›˜äº‹ä»¶
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = CC_CALLBACK_2(CharacterWithTools::onKeyPressed, this);
     listener->onKeyReleased = CC_CALLBACK_2(CharacterWithTools::onKeyReleased, this);
@@ -98,9 +98,9 @@ void CharacterWithTools::move() {
     }
 }
 
-// ==================== ¶ÔÏó³ØÄ£Ê½£ºĞÂÔöusetools ====================
+// ==================== å¯¹è±¡æ± æ¨¡å¼ï¼šæ–°å¢usetools ====================
 /**
- * ¹¤¾ßÊ¹ÓÃÊµÏÖ
+ * å·¥å…·ä½¿ç”¨å®ç°
  */
 void CharacterWithTools::usetools(const std::string& filename) {
     Sprite* tool = getPooledTool(filename);
@@ -160,9 +160,9 @@ bool CharacterWithTools::checkCrop(Vec2 position) {
     return cropPositions.find(gp) != cropPositions.end() && cropPositions[gp];
 }
 
-// ==================== ¶ÔÏó³ØÄ£Ê½£ºĞÂÔöplantcrop ====================
+// ==================== å¯¹è±¡æ± æ¨¡å¼ï¼šæ–°å¢plantcrop ====================
 /**
- * ×÷ÎïÖÖÖ²ÊµÏÖ
+ * ä½œç‰©ç§æ¤å®ç°
  */
 void CharacterWithTools::plantcrop(Vec2 position) {
     int gx = position.x / gridWidth;

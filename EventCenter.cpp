@@ -1,6 +1,6 @@
-/********************************************************************************
+ï»¿/********************************************************************************
  *
- *   Ê¹ÓÃ¹Û²ìÕßÄ£Ê½ÖØ¹¹ºóÐÂÔöµÄEventCenter.cpp
+ *   ä½¿ç”¨è§‚å¯Ÿè€…æ¨¡å¼é‡æž„åŽæ–°å¢žçš„EventCenter.cpp
  *
  ********************************************************************************/
 
@@ -14,7 +14,7 @@ EventCenter* EventCenter::getInstance()
     if (!_instance) {
         _instance = new (std::nothrow) EventCenter();
         if (_instance && _instance->init()) {
-            _instance->retain(); // ±ÜÃâ±» Cocos2d-X ×Ô¶¯ÊÍ·Å
+            _instance->retain(); // é¿å…è¢« Cocos2d-X è‡ªåŠ¨é‡Šæ”¾
         } else {
             CC_SAFE_DELETE(_instance);
         }
@@ -52,7 +52,7 @@ void EventCenter::detach(Observer* observer)
 
 void EventCenter::publish(const EventData& event)
 {
-    // ¼òµ¥±éÀúÍ¨ÖªËùÓÐ¹Û²ìÕß
+    // ç®€å•éåŽ†é€šçŸ¥æ‰€æœ‰è§‚å¯Ÿè€…
     for (auto obs : _observers) {
         if (obs) {
             obs->onNotify(event);

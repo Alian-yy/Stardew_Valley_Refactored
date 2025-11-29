@@ -1,6 +1,6 @@
-/****************************************************************************
+ï»¿/****************************************************************************
  *
- * Ê¹ÓÃ¹Û²ìÕßÄ£Ê½ÖØ¹¹ºóµÄ´úÂë
+ * ä½¿ç”¨è§‚å¯Ÿè€…æ¨¡å¼é‡æ„åçš„ä»£ç 
  *
  ****************************************************************************/
  
@@ -9,19 +9,19 @@
 #include"cocostudio/CocoStudio.h"
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
-// ==================== Ê¹ÓÃ¹Û²ìÕßÄ£Ê½ÖØ¹¹ĞÂÔö£º´ÓÊÂ¼şÖĞĞÄ×¢Ïú ====================
-#include "Observer.h"  //ĞÂÔö
-#include "EventData.h" //ĞÂÔö
+// ==================== ä½¿ç”¨è§‚å¯Ÿè€…æ¨¡å¼é‡æ„æ–°å¢ï¼šä»äº‹ä»¶ä¸­å¿ƒæ³¨é”€ ====================
+#include "Observer.h"  //æ–°å¢
+#include "EventData.h" //æ–°å¢
 
-class outside : public cocos2d::Layer,, public Observer//ĞÂÔö
+class outside : public cocos2d::Layer,, public Observer//æ–°å¢
 {
 public:
     //static cocos2d::Scene* createoutsideScene();
     virtual bool init();
 
-  // ==================== Ê¹ÓÃ¹Û²ìÕßÄ£Ê½ÖØ¹¹ĞÂÔö£ºÀàÉùÃ÷¸ÄÎªÊµÏÖ Observer ½Ó¿Ú£¬²¢Ôö¼ÓÎö¹¹º¯Êı & onNotify ====================
-    virtual void onNotify(const EventData& event) override;//ĞÂÔö
-    virtual ~outside();   //ĞÂÔö
+  // ==================== ä½¿ç”¨è§‚å¯Ÿè€…æ¨¡å¼é‡æ„æ–°å¢ï¼šç±»å£°æ˜æ”¹ä¸ºå®ç° Observer æ¥å£ï¼Œå¹¶å¢åŠ ææ„å‡½æ•° & onNotify ====================
+    virtual void onNotify(const EventData& event) override;//æ–°å¢
+    virtual ~outside();   //æ–°å¢
 
     void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event, cocos2d::TMXTiledMap* tiledMap);
  
@@ -37,9 +37,9 @@ public:
     }
 
     outside() {
-        // ³õÊ¼»¯ÓÎÏ·¿ªÊ¼Ê±¼ä
+        // åˆå§‹åŒ–æ¸¸æˆå¼€å§‹æ—¶é—´
         gameStartTime = std::chrono::high_resolution_clock::now();
-        gameTime = 0; // ÓÎÏ·¿ªÊ¼Ê±£¬ÓÎÏ·ÄÚÊ±¼äÎª0
+        gameTime = 0; // æ¸¸æˆå¼€å§‹æ—¶ï¼Œæ¸¸æˆå†…æ—¶é—´ä¸º0
     }
 
 
@@ -49,29 +49,29 @@ public:
     void update(float delta, cocos2d::Sprite* _player, cocos2d::TMXTiledMap* tiledMap);
     void changeScene();
 
-    // ÏÔÊ¾ÊúÅÅ°´Å¥
+    // æ˜¾ç¤ºç«–æ’æŒ‰é’®
     void showVerticalButtons();
     void showVerticalButtons2();
-    // ÒÆ³ıÊúÅÅ°´Å¥
+    // ç§»é™¤ç«–æ’æŒ‰é’®
     void removeVerticalButtons();
 
-    // ÏÔÊ¾ĞÂ´°¿Ú
+    // æ˜¾ç¤ºæ–°çª—å£
     void showNewWindow();
 
-    // ¼üÅÌÖ¸¶¨·½·¨
+    // é”®ç›˜æŒ‡å®šæ–¹æ³•
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 
-    // Õ¹Ê¾¸öÈË½çÃæ
+    // å±•ç¤ºä¸ªäººç•Œé¢
     void showPersonalInterface();
     void hidePersonalInterface();
 
-    // ¹Ø±Õ¸öÈË½çÃæ
+    // å…³é—­ä¸ªäººç•Œé¢
     void closePersonalInterface(Ref* sender);
 
-    // Ñ¡ÔñÍ¼Ïñ
+    // é€‰æ‹©å›¾åƒ
     void selectImage(int index);
 
-    // ÇĞ»»Í¼Ïñ
+    // åˆ‡æ¢å›¾åƒ
     void switchImage(int direction);
 
 
@@ -89,24 +89,24 @@ private:
     bool _isfishingVisible;
     cocos2d::Rect targetArea;
     cocos2d::Sprite* _lastSprite = nullptr;
-    cocos2d::MenuItemImage* _closeButton;   // ¹Ø±Õ°´Å¥
-    cocos2d::MenuItemImage* _npc1Button;   // npc1°´Å¥
-    cocos2d::MenuItemImage* _npc2Button;   // npc2°´Å¥
-    cocos2d::MenuItemImage* _npc3Button;   // npc3°´Å¥
-    std::chrono::high_resolution_clock::time_point gameStartTime; // ÓÎÏ·¿ªÊ¼Ê±¼ä
-    int gameTime; // ÓÎÏ·ÄÚµÄÊ±¼ä£¨ÒÔ·ÖÖÓÎªµ¥Î»£©
+    cocos2d::MenuItemImage* _closeButton;   // å…³é—­æŒ‰é’®
+    cocos2d::MenuItemImage* _npc1Button;   // npc1æŒ‰é’®
+    cocos2d::MenuItemImage* _npc2Button;   // npc2æŒ‰é’®
+    cocos2d::MenuItemImage* _npc3Button;   // npc3æŒ‰é’®
+    std::chrono::high_resolution_clock::time_point gameStartTime; // æ¸¸æˆå¼€å§‹æ—¶é—´
+    int gameTime; // æ¸¸æˆå†…çš„æ—¶é—´ï¼ˆä»¥åˆ†é’Ÿä¸ºå•ä½ï¼‰
     std::unordered_map<int, int> _buttonClickCounts;
 
-    // ÓÃÓÚ´æ´¢ÊúÅÅ°´Å¥µÄ²ã
+    // ç”¨äºå­˜å‚¨ç«–æ’æŒ‰é’®çš„å±‚
     cocos2d::Layer * _verticalButtonLayer;
 
-    cocos2d::Layer* _personalInterfaceLayer; // ¸öÈË½çÃæ²ã
-    cocos2d::Sprite* _menuWindow;           // ²Ëµ¥´°¿Ú
-    bool _isPersonalInterfaceVisible;      // ¸ú×Ù¸öÈË½çÃæÊÇ·ñ¿É¼û
-    int _currentImageIndex;                // µ±Ç°Í¼ÏñË÷Òı
-    int _selectedButtonIndex;              // Ñ¡Ôñ°´Å¥Ë÷Òı
+    cocos2d::Layer* _personalInterfaceLayer; // ä¸ªäººç•Œé¢å±‚
+    cocos2d::Sprite* _menuWindow;           // èœå•çª—å£
+    bool _isPersonalInterfaceVisible;      // è·Ÿè¸ªä¸ªäººç•Œé¢æ˜¯å¦å¯è§
+    int _currentImageIndex;                // å½“å‰å›¾åƒç´¢å¼•
+    int _selectedButtonIndex;              // é€‰æ‹©æŒ‰é’®ç´¢å¼•
 
-    int _clickedButtonIndex; // ¼ÇÂ¼µã»÷µÄ°´Å¥Î»ÖÃ
+    int _clickedButtonIndex; // è®°å½•ç‚¹å‡»çš„æŒ‰é’®ä½ç½®
     class CharacterWithTools* characteraction;
 
     cocos2d::ParticleSystem* _rainParticleSystem;

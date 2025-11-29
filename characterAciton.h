@@ -1,7 +1,7 @@
-/****************************************************************************
-* Ê¹ÓÃÉú³ÉÆ÷Ä£Ê½ºÍ¶ÔÏó³ØÄ£Ê½ÖØ¹¹ºóµÄ´úÂë
-* CharacterAciton.h - ´ø¹¤¾ßµÄ½ÇÉ«Àà¶¨Òå
-* Ìá¹©½ÇÉ«ÒÆ¶¯¡¢¹¤¾ßÊ¹ÓÃ¡¢×÷ÎïÖÖÖ²¹¦ÄÜ£¬Í¨¹ı¶ÔÏó³ØÓÅ»¯×ÊÔ´¸´ÓÃ£¬Éú³ÉÆ÷Ä£Ê½¼ò»¯¶¯»­¹¹½¨
+ï»¿/****************************************************************************
+* ä½¿ç”¨ç”Ÿæˆå™¨æ¨¡å¼å’Œå¯¹è±¡æ± æ¨¡å¼é‡æ„åçš„ä»£ç 
+* CharacterAciton.h - å¸¦å·¥å…·çš„è§’è‰²ç±»å®šä¹‰
+* æä¾›è§’è‰²ç§»åŠ¨ã€å·¥å…·ä½¿ç”¨ã€ä½œç‰©ç§æ¤åŠŸèƒ½ï¼Œé€šè¿‡å¯¹è±¡æ± ä¼˜åŒ–èµ„æºå¤ç”¨ï¼Œç”Ÿæˆå™¨æ¨¡å¼ç®€åŒ–åŠ¨ç”»æ„å»º
 ****************************************************************************/
 #pragma once
 #ifndef __CHARACTER_WITH_TOOLS_H__
@@ -16,7 +16,7 @@ extern std::map<Vec2, bool> cropPositions;
 #define gridWidth 150.0f
 #define gridHeight 120.0f
 
-// ==================== ¶ÔÏó³ØÄ£Ê½£ºĞÂÔögetPooledCrop ====================
+// ==================== å¯¹è±¡æ± æ¨¡å¼ï¼šæ–°å¢getPooledCrop ====================
 static std::vector<Crop*> cropPool;
 static std::map<std::string, std::vector<Sprite*>> toolPool;
 
@@ -30,16 +30,16 @@ static Crop* getPooledCrop() {
     return Crop::create("plant/cropseed.png");
 }
 
-// ==================== ¶ÔÏó³ØÄ£Ê½£ºĞÂÔörecycleCrop ====================
+// ==================== å¯¹è±¡æ± æ¨¡å¼ï¼šæ–°å¢recycleCrop ====================
 static void recycleCrop(Crop* crop) {
     crop->stopAllActions();
     crop->setVisible(false);
     cropPool.push_back(crop);
 }
 
-// ==================== ¶ÔÏó³ØÄ£Ê½£ºĞÂÔögetPooledTool ====================
+// ==================== å¯¹è±¡æ± æ¨¡å¼ï¼šæ–°å¢getPooledTool ====================
 /**
-* ´Ó¹¤¾ß¶ÔÏó³Ø»ñÈ¡Ö¸¶¨ÀàĞÍµÄ¹¤¾ßÊµÀı
+* ä»å·¥å…·å¯¹è±¡æ± è·å–æŒ‡å®šç±»å‹çš„å·¥å…·å®ä¾‹
 */
 static Sprite* getPooledTool(const std::string& filename) {
     auto& list = toolPool[filename];
@@ -52,16 +52,16 @@ static Sprite* getPooledTool(const std::string& filename) {
     return Sprite::create(filename);
 }
 
-33 // ==================== ¶ÔÏó³ØÄ£Ê½£ºĞÂÔörecycleTool ====================
+33 // ==================== å¯¹è±¡æ± æ¨¡å¼ï¼šæ–°å¢recycleTool ====================
 static void recycleTool(Sprite* tool, const std::string& filename) {
     tool->stopAllActions();
     tool->setVisible(false);
     toolPool[filename].push_back(tool);
 }
 
-// ==================== Éú³ÉÆ÷Ä£Ê½£ºĞÂÔöAnimationBuilder¶¯»­¹¹½¨Æ÷ ====================
+// ==================== ç”Ÿæˆå™¨æ¨¡å¼ï¼šæ–°å¢AnimationBuilderåŠ¨ç”»æ„å»ºå™¨ ====================
 /**
-* ¹¹½¨¶¯»­ÊµÀı
+* æ„å»ºåŠ¨ç”»å®ä¾‹
 */
 class AnimationBuilder {
 public:

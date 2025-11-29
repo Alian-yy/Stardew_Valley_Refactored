@@ -1,6 +1,6 @@
-/****************************************************************************
+ï»¿/****************************************************************************
  *
- * Ê¹ÓÃ¹¤³§Ä£Ê½ÖØ¹¹ºóµÄ´úÂë
+ * ä½¿ç”¨å·¥å‚æ¨¡å¼é‡æ„åçš„ä»£ç 
  *
  ****************************************************************************/
 #ifndef __CROP_H__
@@ -31,7 +31,7 @@ protected:
     double growthTime;
     double matureTime;
     bool watered;
-    // °´¼üÊÂ¼ş´¦Àí
+    // æŒ‰é”®äº‹ä»¶å¤„ç†
     void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
     void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {};
 public:
@@ -41,25 +41,25 @@ public:
     ~Crop();
     void update(float delta);
 
-    // »ñÈ¡×÷ÎïµÄ×´Ì¬
+    // è·å–ä½œç‰©çš„çŠ¶æ€
     State getState() const;
 
-    // ÊÕ»ñ×÷Îï
+    // æ”¶è·ä½œç‰©
     void harvest();
 
-    // ÖØÖÃ×÷Îï×´Ì¬
+    // é‡ç½®ä½œç‰©çŠ¶æ€
     void resetState();
 
-    // ¹©¹¤³§³õÊ¼»¯
+    // ä¾›å·¥å‚åˆå§‹åŒ–
     void setInitialTexture(const std::string& file) { this->setTexture(file); }
     void setMatureTime(double t) { matureTime = t; }
 };
 
-// ==================== ¹¤³§Ä£Ê½£ºĞÂÔöCropFactory ====================
+// ==================== å·¥å‚æ¨¡å¼ï¼šæ–°å¢CropFactory ====================
 class CropFactory {
 public:
     static Crop* createCrop(const std::string& cropType);
-    // ÅäÖÃ×÷ÎïÊôĞÔ£¨ÓÃÓÚ¶ÔÏó³Ø¸´ÓÃÊ±³õÊ¼»¯²»Í¬ÀàĞÍ×÷Îï£©
+    // é…ç½®ä½œç‰©å±æ€§ï¼ˆç”¨äºå¯¹è±¡æ± å¤ç”¨æ—¶åˆå§‹åŒ–ä¸åŒç±»å‹ä½œç‰©ï¼‰
     static void configureCrop(Crop* crop, const std::string& cropType);
 };
 

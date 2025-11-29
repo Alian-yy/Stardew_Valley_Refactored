@@ -1,4 +1,4 @@
-#ifndef _SCENESTATEMANAGER_H_
+ï»¿#ifndef _SCENESTATEMANAGER_H_
 #define _SCENESTATEMANAGER_H_
 
 #include"cocostudio/CocoStudio.h"
@@ -6,7 +6,7 @@
 #include "cocos2d.h"
 
 USING_NS_CC;
-// ¶¨ÒåÒ»¸öµ¥ÀıÀà£¬ÓÃÓÚ±£´æ³¡¾°×´Ì¬
+// å®šä¹‰ä¸€ä¸ªå•ä¾‹ç±»ï¼Œç”¨äºä¿å­˜åœºæ™¯çŠ¶æ€
 class SceneStateManager {
 public:
     static SceneStateManager* getInstance() {

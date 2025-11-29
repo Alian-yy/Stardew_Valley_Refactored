@@ -1,4 +1,4 @@
-// EventCenter.h
+ï»¿// EventCenter.h
 #ifndef __EVENT_CENTER_H__
 #define __EVENT_CENTER_H__
 
@@ -7,22 +7,22 @@
 
 /********************************************************************************
  *
- *   Ê¹ÓÃ¹Û²ìÕßÄ£Ê½ÖØ¹¹ºóĞÂÔöµÄEventCenter.h
+ *   ä½¿ç”¨è§‚å¯Ÿè€…æ¨¡å¼é‡æ„åæ–°å¢çš„EventCenter.h
  *
  ********************************************************************************/
 
 
-// Í³Ò»ÊÂ¼şÖĞĞÄ£¨µ¥Àı£©£º¸ºÔğÎ¬»¤¹Û²ìÕßÁĞ±í²¢·Ö·¢ÊÂ¼ş
+// ç»Ÿä¸€äº‹ä»¶ä¸­å¿ƒï¼ˆå•ä¾‹ï¼‰ï¼šè´Ÿè´£ç»´æŠ¤è§‚å¯Ÿè€…åˆ—è¡¨å¹¶åˆ†å‘äº‹ä»¶
 class EventCenter : public cocos2d::Ref {
 public:
-    // »ñÈ¡È«¾ÖÎ¨Ò»ÊµÀı
+    // è·å–å…¨å±€å”¯ä¸€å®ä¾‹
     static EventCenter* getInstance();
 
-    // ×¢²á / È¡Ïû×¢²á ¹Û²ìÕß
+    // æ³¨å†Œ / å–æ¶ˆæ³¨å†Œ è§‚å¯Ÿè€…
     void attach(Observer* observer);
     void detach(Observer* observer);
 
-    // ·¢²¼ÊÂ¼ş£¨Á½ÖÖÖØÔØ£©
+    // å‘å¸ƒäº‹ä»¶ï¼ˆä¸¤ç§é‡è½½ï¼‰
     void publish(const EventData& event);
     void publish(EventType type, void* sender,
                  const cocos2d::Value& extra = cocos2d::Value());
@@ -35,7 +35,7 @@ private:
 
     static EventCenter* _instance;
 
-    // Ê¹ÓÃ cocos2d::Vector ¹ÜÀíÖ¸Õë£¬ºÍÒıÇæÄÚ´æÄ£ĞÍÒ»ÖÂ
+    // ä½¿ç”¨ cocos2d::Vector ç®¡ç†æŒ‡é’ˆï¼Œå’Œå¼•æ“å†…å­˜æ¨¡å‹ä¸€è‡´
     cocos2d::Vector<Observer*> _observers;
 };
 
