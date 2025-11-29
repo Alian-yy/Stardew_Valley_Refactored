@@ -1,6 +1,6 @@
 ﻿/****************************************************************************
  * 
- * ʹ�ù���ģʽ�ع���Ĵ���
+ *   使用状态模式重构后的新增的AnimalState.h
  * 
  ****************************************************************************/
 #ifndef _ANIMAL_H_
@@ -13,15 +13,11 @@
 #include "AnimalState.h"
 USING_NS_CC;
 
-/// ==================================
-///  ʹ����Ϊģʽ�Ͳ���ģʽ�ع���Ĵ���
-///  1.����״̬�붯�����ƣ���ȡ����
-/// ==================================
 class Animal : public Sprite {
 protected:
-    Vec2 targetPosition; // Ŀ���
-    Rect Bounds; // �߽�
-    float speed;//������ٶ�
+    Vec2 targetPosition; 
+    Rect Bounds; 
+    float speed;
     std::string animPrefix;
 
     std::unique_ptr<AnimalState> currentState;
@@ -36,11 +32,11 @@ public:
     void generateNewTarget();
     void update(float delta);
     
-    // ״̬�붯������
+    // 状态与行为动画控制
     void changeState(std::unique_ptr<AnimalState> newState);
     void setAnimationStrategy(AnimationStrategy* strategy);
     
-    // ��ȡ����
+    // 获取方法
     Vec2 getTargetPosition() const { return targetPosition; }
     void setTargetPosition(const Vec2& pos) { targetPosition = pos; }
     float getSpeed() const { return speed; }
@@ -48,7 +44,6 @@ public:
     const Rect& getBounds() const { return Bounds; }
 };
 
-//����
 class Sheep :public Animal
 {
 public:
@@ -57,7 +52,6 @@ public:
     bool init(const std::string& filename)override;
 };
 
-//ţ
 class Cow :public Animal {
 public:
     static Cow* create(const std::string& filename);
@@ -65,7 +59,6 @@ public:
     bool init(const std::string& filename)override;
 };
 
-//����
 class Parrot :public Animal {
 public:
     static Parrot* create(const std::string& filename);
@@ -74,9 +67,9 @@ public:
 };
 
 
-/// ==================================
-///  ʹ�ù���ģʽ�ع���Ĵ���
-/// ==================================
+
+
+// 动物创建工厂
 class AnimalFactory {
 public:
     static Animal* createAnimal(const std::string& filename);
