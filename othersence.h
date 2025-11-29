@@ -13,7 +13,7 @@ public:
     virtual bool init();
 
     CREATE_FUNC(othersence);
-    //½øÈëÏÂÒ»¸öÓÎÏ·½çÃæ
+    //è¿›å…¥ä¸‹ä¸€ä¸ªæ¸¸æˆç•Œé¢
     void setViewPointCenter(Point position, cocos2d::TMXTiledMap* tiledMap);
   
 private:
