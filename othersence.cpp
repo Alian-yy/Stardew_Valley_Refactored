@@ -26,8 +26,7 @@ bool othersence::init()
         return false;
     }
 
-    //���ÿ�ʼ����
-
+    //设置开始背景
     auto tiledMap = TMXTiledMap::create("tiledmap/othersence1.tmx");
     this->addChild(tiledMap, 0);
    tiledMap->setScale(3);
@@ -38,7 +37,7 @@ bool othersence::init()
         return false;
     }
 
-    auto button = ui::Button::create("picture/out1.png", "picture/out2.png"); // ��ť������״̬�Ͱ���״̬ͼƬ
+    auto button = ui::Button::create("picture/out1.png", "picture/out2.png"); // 按钮的正常状态和按下状态图片
 
     button->setPosition(Vec2(3700,100));
     this->addChild(button);
@@ -48,20 +47,20 @@ bool othersence::init()
 
     this->scheduleUpdate();
 
-    // ��ÿ֡�и����ӵ�λ�ã�ʹ��ͼʼ�ո�������
+    // 在每帧中更新视点位置，使地图始终跟随人物
     this->schedule([=](float deltaTime) {
-        // ��ȡ���ﵱǰ����������
+        // 获取人物当前的世界坐标
         Vec2 characterPosition = characteraction->getPosition();
 
-        // �����ӵ㣬ȷ����ͼʼ�ո�������
+        // 更新视点，确保地图始终跟随人物
 
         setViewPointCenter(characterPosition, tiledMap);
         }, "view_point_update_key");
 
     button->addClickEventListener([=](Ref* sender) {
 
-        // �ص��ɳ���ʱ�ָ�״̬
-        //Scene* previousScene = outside::createSceneWithMapIndex(1); // �����ɳ���
+        // 回到旧场景时恢复状态
+        //Scene* previousScene = outside::createSceneWithMapIndex(1);  // 创建旧场景
         characteraction->setPosition(SceneStateManager::getInstance()->getCharacterPosition());
         tiledMap->setName(SceneStateManager::getInstance()->getMapName());
         // ==================== 外观模式: 重构场景返回 ====================
@@ -78,31 +77,30 @@ bool othersence::init()
 
 void othersence::setViewPointCenter(Point position, cocos2d::TMXTiledMap* tiledMap) {
     const auto winSize = Director::getInstance()->getWinSize();
+    float scale = tiledMap->getScale(); // 获取当前的缩放比例
 
-    float scale = tiledMap->getScale(); // ��ȡ��ǰ�����ű���
-
-    // ����ʵ�ʵ���ͼ�������꣨�������ţ�
+    // 计算实际的视图中心坐标（考虑缩放）
     int x = MAX(position.x, winSize.width / 2);
     int y = MAX(position.y, winSize.height / 2);
 
-    // �������ź�ĵ�ͼ�ߴ�
+    // 计算缩放后的地图尺寸
     float mapWidth = tiledMap->getMapSize().width * tiledMap->getTileSize().width * scale;
     float mapHeight = tiledMap->getMapSize().height * tiledMap->getTileSize().height * scale;
 
-    // ȷ���ӵ㲻�ᳬ����ͼ�ķ�Χ
+    // 确保视点不会超出地图的范围
     x = MIN(x, mapWidth - winSize.width / 2);
     y = MIN(y, mapHeight - winSize.height / 2);
 
-    // �����ӵ�ʵ��λ��
+    // 计算视点实际位置
     auto actualPosition = Point(x, y);
 
-    // ��Ļ���ĵ�
+    // 屏幕中心点
     auto centerOfView = Point(winSize.width / 2, winSize.height / 2);
 
-    // �����µ��ӵ�λ��
+    // 计算新的视点位置
     auto viewPoint = centerOfView - actualPosition;
 
-    // ������ͼλ��
-
+    // 更新视图位置
     this->setPosition(viewPoint);
 }
+
