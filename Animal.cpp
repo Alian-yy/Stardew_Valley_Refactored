@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * Ê¹ÓÃ¹¤³§Ä£Ê½ÖØ¹¹ºóµÄ´úÂë
+ * Ê¹ï¿½Ã¹ï¿½ï¿½ï¿½Ä£Ê½ï¿½Ø¹ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
  *
  ****************************************************************************/
 #include"cocostudio/CocoStudio.h"
@@ -11,35 +11,53 @@
 USING_NS_CC;
 
 Animal::Animal(){
-    targetPosition=Vec2(2400,700); // Ä¿±êµã
+    targetPosition=Vec2(2400,700); // Ä¿ï¿½ï¿½ï¿½
     Bounds = Rect(2000, 790, 600, 300);
-    animalmoveAnimate=nullptr;
-    animalmoveAnimation=nullptr;
-    speed=1;
+    speed=1.0f;
 }
-Animal::~Animal() {};
 
 Animal* Animal::create(const std::string& filename) {
     return nullptr;
 }
 void Animal::generateNewTarget() {
-    // ÔÚµØÍ¼·¶Î§ÄÚËæ»úÉú³ÉÄ¿±êµã
+    // ï¿½Úµï¿½Í¼ï¿½ï¿½Î§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½
     float x = CCRANDOM_0_1() * Bounds.size.width + Bounds.origin.x;
     float y = CCRANDOM_0_1() * Bounds.size.height + Bounds.origin.y;
     targetPosition = Vec2(x, y);
 }
 
+/// ==================================
+///  Ê¹ï¿½ï¿½ï¿½ï¿½ÎªÄ£Ê½ï¿½Í²ï¿½ï¿½ï¿½Ä£Ê½ï¿½Ø¹ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
+///  1.ï¿½ï¿½ï¿½ï¿½update,changeStat,setAnimationStrategy
+///  2.ï¿½Þ¸Ä¶ï¿½ï¿½ï¿½createï¿½ï¿½ï¿½ï¿½
+/// ==================================
+
 void Animal::update(float delta) {
-    Vec2 direction = targetPosition - this->getPosition();
-
-    this->setPosition(this->getPosition() + direction * delta *speed);
-
-    // ¼ì²éÊÇ·ñµ½´ïÄ¿±êµã
-    if (this->getPosition().distance(targetPosition) < 10.0f) {
-        generateNewTarget(); // µ½´ïÄ¿±êµãºóÉú³ÉÐÂµÄÄ¿±êµã
+    if (currentState) {
+        currentState->update(this, delta);
     }
 }
 
+// ==================== ×´Ì¬Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½changeState ====================
+void Animal::changeState(std::unique_ptr<AnimalState> newState) {
+    if (currentState) {
+        currentState->exit(this);
+    }
+    currentState = std::move(newState);
+    if (currentState) {
+        currentState->enter(this);
+    }
+}
+
+// ==================== ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½setAnimationStrategy ====================
+void Animal::setAnimationStrategy(AnimationStrategy* strategy) {
+    currentAnimation.reset(strategy);
+    if (strategy && this->isRunning()) {
+        strategy->applyAnimation(this);
+    }
+}
+
+// ==================== ï¿½ï¿½ï¿½ï¿½ ====================
 Sheep* Sheep::create(const std::string& filename) {
     auto animal = new (std::nothrow) Sheep();
     if (animal && animal->init(filename)) {
@@ -49,29 +67,24 @@ Sheep* Sheep::create(const std::string& filename) {
     CC_SAFE_DELETE(animal);
     return nullptr;
 }
-Sheep::Sheep() {};
-Sheep::~Sheep() {};
+
+Sheep::Sheep() {
+    speed = 1.0f;
+    Bounds = Rect(2000, 790, 600, 300);
+}
+
 bool Sheep::init(const std::string& filename){
-    if (!Sprite::initWithFile(filename)) {
-        CCLOG("Error: Failed to load animal image: %s", filename.c_str());
+   if (!Sprite::initWithFile(filename)) {
+        CCLOG("Error: Failed to load Sheep image: %s", filename.c_str());
         return false;
     }
-
-    animalmoveAnimation = Animation::create();
-    for (int i = 1; i <= 4; i++) {
-        std::string frameName = "animal/Sheep" + std::to_string(i) + ".png";
-        animalmoveAnimation->addSpriteFrameWithFile(frameName);
-    }
-    animalmoveAnimation->setDelayPerUnit(0.1f); // ÉèÖÃÃ¿Ö¡µÄ²¥·ÅÊ±¼ä
-    animalmoveAnimation->setLoops(-1); // ÉèÖÃÑ­»·²¥·Å
-    animalmoveAnimate = Animate::create(animalmoveAnimation);
-    //animalmoveAnimate->retain(); // ±£Áô¶¯»­¶ÔÏó£¬·ÀÖ¹±»ÊÍ·Å
-    this->runAction(animalmoveAnimate);
-    // Ã¿Ö¡¸üÐÂ
+    animPrefix = "animal/Sheep";
+    changeState(std::make_unique<WanderingState>());
     this->scheduleUpdate();
     return true;
 }
 
+// ==================== Å£ ====================
 Cow* Cow::create(const std::string& filename) {
     auto animal = new (std::nothrow) Cow();
     if (animal && animal->init(filename)) {
@@ -82,33 +95,23 @@ Cow* Cow::create(const std::string& filename) {
     return nullptr;
 }
 
+Cow::Cow() {
+    speed = 0.8f;
+    Bounds = Rect(2000, 790, 600, 300);
+}
+
 bool Cow::init(const std::string& filename) {
     if (!Sprite::initWithFile(filename)) {
-        CCLOG("Error: Failed to load animal image: %s", filename.c_str());
+        CCLOG("Error: Failed to load Cow image: %s", filename.c_str());
         return false;
     }
-
-    animalmoveAnimation = Animation::create();
-    for (int i = 1; i <= 4; i++) {
-        std::string frameName = "animal/Cow" + std::to_string(i) + ".png";
-        animalmoveAnimation->addSpriteFrameWithFile(frameName);
-    }
-    animalmoveAnimation->setDelayPerUnit(0.1f); // ÉèÖÃÃ¿Ö¡µÄ²¥·ÅÊ±¼ä
-    animalmoveAnimation->setLoops(-1); // ÉèÖÃÑ­»·²¥·Å
-    animalmoveAnimate = Animate::create(animalmoveAnimation);
-    //animalmoveAnimate->retain(); // ±£Áô¶¯»­¶ÔÏó£¬·ÀÖ¹±»ÊÍ·Å
-    this->runAction(animalmoveAnimate);
-    // Ã¿Ö¡¸üÐÂ
+    animPrefix = "animal/Cow";
+    changeState(std::make_unique<WanderingState>());
     this->scheduleUpdate();
     return true;
 }
 
-Parrot::Parrot() {
-    speed=3;
-    Bounds = Rect(2000, 790, 1000, 1000);
-
-};
-
+// ==================== ï¿½ï¿½ï¿½ï¿½ ====================
 Parrot* Parrot::create(const std::string& filename) {
     auto animal = new (std::nothrow) Parrot();
     if (animal && animal->init(filename)) {
@@ -119,28 +122,24 @@ Parrot* Parrot::create(const std::string& filename) {
     return nullptr;
 }
 
+Parrot::Parrot() {
+    speed=3;
+    Bounds = Rect(2000, 790, 1000, 1000);
+
+};
+
 bool Parrot::init(const std::string& filename) {
-    if (!Sprite::initWithFile(filename)) {
-        CCLOG("Error: Failed to load animal image: %s", filename.c_str());
+     if (!Sprite::initWithFile(filename)) {
+        CCLOG("Error: Failed to load Parrot image: %s", filename.c_str());
         return false;
     }
-
-    animalmoveAnimation = Animation::create();
-    for (int i = 1; i <= 4; i++) {
-        std::string frameName = "animal/Parrot" + std::to_string(i) + ".png";
-        animalmoveAnimation->addSpriteFrameWithFile(frameName);
-    }
-    animalmoveAnimation->setDelayPerUnit(0.1f); // ÉèÖÃÃ¿Ö¡µÄ²¥·ÅÊ±¼ä
-    animalmoveAnimation->setLoops(-1); // ÉèÖÃÑ­»·²¥·Å
-    animalmoveAnimate = Animate::create(animalmoveAnimation);
-    //animalmoveAnimate->retain(); // ±£Áô¶¯»­¶ÔÏó£¬·ÀÖ¹±»ÊÍ·Å
-    this->runAction(animalmoveAnimate);
-    // Ã¿Ö¡¸üÐÂ
+    animPrefix = "animal/Parrot";
+    changeState(std::make_unique<WanderingState>());
     this->scheduleUpdate();
     return true;
 }
 
-// ==================== ¹¤³§Ä£Ê½: ÐÂÔöcreateAnimal ====================
+// ==================== ï¿½ï¿½ï¿½ï¿½Ä£Ê½ ====================
 Animal* AnimalFactory::createAnimal(const std::string& filename)
 {
     std::string lower = filename;

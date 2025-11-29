@@ -1,6 +1,6 @@
 /****************************************************************************
  * 
- * Ê¹ÓÃ¹¤³§Ä£Ê½ÖØ¹¹ºóµÄ´úÂë
+ * Ê¹ï¿½Ã¹ï¿½ï¿½ï¿½Ä£Ê½ï¿½Ø¹ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
  * 
  ****************************************************************************/
 #ifndef _ANIMAL_H_
@@ -9,33 +9,51 @@
 #include"cocostudio/CocoStudio.h"
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
-
+#include "AnimationStrategy.h"
+#include "AnimalState.h"
 USING_NS_CC;
 
+/// ==================================
+///  Ê¹ï¿½ï¿½ï¿½ï¿½ÎªÄ£Ê½ï¿½Í²ï¿½ï¿½ï¿½Ä£Ê½ï¿½Ø¹ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
+///  1.ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ë¶¯ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
+/// ==================================
 class Animal : public Sprite {
 protected:
-    Vec2 targetPosition; // Ä¿±êµã
-    Rect Bounds; // ±ß½ç
-    Animation* animalmoveAnimation;
-    Animate* animalmoveAnimate;
-    float speed;//¶¯ÎïµÄËÙ¶È
+    Vec2 targetPosition; // Ä¿ï¿½ï¿½ï¿½
+    Rect Bounds; // ï¿½ß½ï¿½
+    float speed;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+    std::string animPrefix;
+
+    std::unique_ptr<AnimalState> currentState;
+    std::unique_ptr<AnimationStrategy> currentAnimation;
 
 public:
     Animal();
     virtual ~Animal();
     static Animal* create(const std::string& filename);
     virtual bool init(const std::string& filename) = 0;
+
     void generateNewTarget();
     void update(float delta);
+    
+    // ×´Ì¬ï¿½ë¶¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    void changeState(std::unique_ptr<AnimalState> newState);
+    void setAnimationStrategy(AnimationStrategy* strategy);
+    
+    // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
+    Vec2 getTargetPosition() const { return targetPosition; }
+    void setTargetPosition(const Vec2& pos) { targetPosition = pos; }
+    float getSpeed() const { return speed; }
+    const std::string& getAnimPrefix() const { return animPrefix; }
+    const Rect& getBounds() const { return Bounds; }
 };
 
-//ÃàÑò
+//ï¿½ï¿½ï¿½ï¿½
 class Sheep :public Animal
 {
 public:
     static Sheep* create(const std::string& filename);
     Sheep();
-    ~Sheep();
     bool init(const std::string& filename)override;
 };
 
@@ -44,21 +62,21 @@ class Cow :public Animal {
 public:
     static Cow* create(const std::string& filename);
     Cow() {};
-    ~Cow() {};
     bool init(const std::string& filename)override;
 };
 
-//ðÐðÄ
+//ï¿½ï¿½ï¿½ï¿½
 class Parrot :public Animal {
 public:
     static Parrot* create(const std::string& filename);
     Parrot();
-    ~Parrot() {};
     bool init(const std::string& filename)override;
 };
 
 
-// ==================== ¹¤³§Ä£Ê½: ÐÂÔöAnimalFactory ====================
+/// ==================================
+///  Ê¹ï¿½Ã¹ï¿½ï¿½ï¿½Ä£Ê½ï¿½Ø¹ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
+/// ==================================
 class AnimalFactory {
 public:
     static Animal* createAnimal(const std::string& filename);
