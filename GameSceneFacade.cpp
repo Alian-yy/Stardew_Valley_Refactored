@@ -14,6 +14,7 @@
 
 USING_NS_CC;
 
+// ==================== 外观模式: 新增runWithBeginScene ====================
 /**
  * 启动游戏，运行开场场景
  */
@@ -23,6 +24,7 @@ void GameSceneFacade::runWithBeginScene()
     Director::getInstance()->runWithScene(scene);
 }
 
+// ==================== 外观模式: 新增showMenuScene ====================
 /**
  * 从开场场景切换到菜单场景（带过渡动画）
  */
@@ -32,6 +34,7 @@ void GameSceneFacade::showMenuScene()
     Director::getInstance()->replaceScene(TransitionCrossFade::create(0.5, scene));
 }
 
+// ==================== 外观模式: 新增enterFarmScene ====================
 /**
  * 从菜单场景进入农场场景
  */
@@ -41,6 +44,7 @@ void GameSceneFacade::enterFarmScene(int mapIndex)
     Director::getInstance()->replaceScene(newScene);
 }
 
+// ==================== 外观模式: 新增enterHouseScene ====================
 /**
  * 从农场场景进入房屋场景
  */
@@ -50,6 +54,7 @@ void GameSceneFacade::enterHouseScene()
     Director::getInstance()->pushScene(scene);
 }
 
+// ==================== 外观模式: 新增enterOtherAreaScene ====================
 /**
  * 从农场场景进入其他区域场景
  */
@@ -59,6 +64,7 @@ void GameSceneFacade::enterOtherAreaScene()
     Director::getInstance()->pushScene(scene);
 }
 
+// ==================== 外观模式: 新增returnToPreviousScene ====================
 /**
  * 从子场景（房屋/其他区域）返回到上一个场景
  */
