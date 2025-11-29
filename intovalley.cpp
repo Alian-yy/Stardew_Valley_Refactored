@@ -3,7 +3,7 @@
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
 #include "SceneStateManager.h"
-#include "characterAciton.h"
+#include "characterAction.h"
 #include "GameSceneFacade.h"
 
 

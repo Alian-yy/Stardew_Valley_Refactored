@@ -3,7 +3,7 @@
 * CharacterWithTools.cpp - 角色功能实现
 * 实现角色动画构建、工具使用、作物种植等功能，结合对象池优化资源管理
 ****************************************************************************/
-#include "characterAciton.h"
+#include "characterAction.h"
 #include "outside.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
