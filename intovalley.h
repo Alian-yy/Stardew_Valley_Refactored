@@ -15,7 +15,7 @@ public:
     virtual bool init();
 
     CREATE_FUNC(intovalley);
-    //½øÈëÏÂÒ»¸öÓÎÏ·½çÃæ
+    //è¿›å…¥ä¸‹ä¸€ä¸ªæ¸¸æˆç•Œé¢
 private:
     CharacterWithTools* characteraction;
 };
