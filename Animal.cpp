@@ -16,6 +16,8 @@ Animal::Animal(){
     speed=1.0f;
 }
 
+Animal::~Animal() {}
+
 Animal* Animal::create(const std::string& filename) {
     return nullptr;
 }
