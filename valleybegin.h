@@ -10,10 +10,10 @@ public:
     static cocos2d::Scene* createvalleybeginScene();
 
     virtual bool init();
-    //ÓÎÏ·¿ªÊ¼
+    //æ¸¸æˆå¼€å§‹
     void valleybegin::Startgame(Ref* obj);
 
-    //ÓÎÏ·½áÊø
+    //æ¸¸æˆç»“æŸ
     void valleybegin::Endgame(Ref* obj);
 
     int gettimebool();
