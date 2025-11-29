@@ -1,3 +1,8 @@
+/****************************************************************************
+ *
+ * 使用工厂模式和对象池模式重构后的代码
+ *
+ ****************************************************************************/
 #include "Crop.h"
 #include "SimpleAudioEngine.h"
 #include "intovalley.h"
@@ -43,7 +48,10 @@ bool Crop::init(const std::string& filename)
     return true;
 }
 
-// 状态重置方法实现（用于对象池复用）
+// ==================== 对象池模式：新增resetState ====================
+/**
+* 作物状态重置（用于复用）
+*/
 void Crop::resetState() {
     // 重置生长状态参数
     state = State::seed;
@@ -104,6 +112,10 @@ void Crop::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
         watered = true;
 }
 
+// ==================== 对象池模式：新增harvest ====================
+/**
+* 作物收获与回收
+*/
 void Crop::harvest()
 {
     if (state == State::harvested || state == State::dead) {
@@ -120,9 +132,7 @@ void Crop::harvest()
     }
 }
 
-/*-------------------------------------------------------
- |  CropFactory 工厂实现
- -------------------------------------------------------*/
+// ==================== 工厂模式: 新增CropFactory ====================
 Crop* CropFactory::createCrop(const std::string& cropType)
 {
     auto crop = Crop::create();
@@ -148,7 +158,10 @@ Crop* CropFactory::createCrop(const std::string& cropType)
     return crop;
 }
 
-// 工厂类配置方法实现（用于对象池复用时初始化不同类型作物）
+// ==================== 工厂模式：新增configureCrop ====================
+/**
+* 作物配置（用于对象池复用初始化）
+*/
 void CropFactory::configureCrop(Crop* crop, const std::string& cropType) {
     if (!crop) return;
 

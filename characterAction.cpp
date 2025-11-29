@@ -1,3 +1,8 @@
+/****************************************************************************
+* 使用生成器模式和对象池模式的角色实现代码
+* CharacterWithTools.cpp - 角色功能实现
+* 实现角色动画构建、工具使用、作物种植等功能，结合对象池优化资源管理
+****************************************************************************/
 #include "characterAciton.h"
 #include "outside.h"
 #include "cocostudio/CocoStudio.h"
@@ -40,7 +45,7 @@ bool CharacterWithTools::init(const std::string& filename) {
 
     velocity = Vec2::ZERO;
 
-    // ========== 使用 AnimationBuilder 简化动画构建 ==========
+    // ========== 生成器模式：使用 AnimationBuilder 构建动画 ==========
     walkLeftAnimation = AnimationBuilder().from("character/Danaleft").frames(1, 3).delay(0.1f).build();
     walkLeftAnimate = Animate::create(walkLeftAnimation); walkLeftAnimate->retain();
 
@@ -93,7 +98,10 @@ void CharacterWithTools::move() {
     }
 }
 
-// ========== 使用对象池的工具函数 ==========
+// ==================== 对象池模式：新增usetools ====================
+/**
+ * 工具使用实现
+ */
 void CharacterWithTools::usetools(const std::string& filename) {
     Sprite* tool = getPooledTool(filename);
     if (!tool) return;
@@ -152,7 +160,10 @@ bool CharacterWithTools::checkCrop(Vec2 position) {
     return cropPositions.find(gp) != cropPositions.end() && cropPositions[gp];
 }
 
-// ========== 使用对象池种植作物 ==========
+// ==================== 对象池模式：新增plantcrop ====================
+/**
+ * 作物种植实现
+ */
 void CharacterWithTools::plantcrop(Vec2 position) {
     int gx = position.x / gridWidth;
     int gy = position.y / gridHeight;

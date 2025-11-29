@@ -1,3 +1,8 @@
+/****************************************************************************
+ *
+ * 使用工厂模式重构后的代码
+ *
+ ****************************************************************************/
 #include"cocostudio/CocoStudio.h"
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
@@ -135,6 +140,7 @@ bool Parrot::init(const std::string& filename) {
     return true;
 }
 
+// ==================== 工厂模式: 新增createAnimal ====================
 Animal* AnimalFactory::createAnimal(const std::string& filename)
 {
     std::string lower = filename;
