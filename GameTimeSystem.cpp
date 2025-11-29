@@ -31,12 +31,12 @@ bool GameTimeSystem::init()
 
 GameTimeSystem::GameTimeSystem()
 {
-    // ¹¹Ôìº¯Êı
+   // æ„é€ å‡½æ•°
 }
 
 GameTimeSystem::~GameTimeSystem()
 {
-    // Îö¹¹º¯Êı
+   // ææ„å‡½æ•°
 }
 
 long GameTimeSystem::getElapsedTime()
