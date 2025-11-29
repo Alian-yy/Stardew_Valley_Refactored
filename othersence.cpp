@@ -6,6 +6,7 @@
 #include "characterAciton.h"
 #include "SceneStateManager.h"
 #include "GameSceneFacade.h"
+
 USING_NS_CC;
 
 Scene* othersence::createothersenceScene()
@@ -24,7 +25,9 @@ bool othersence::init()
     {
         return false;
     }
+
     //���ÿ�ʼ����
+
     auto tiledMap = TMXTiledMap::create("tiledmap/othersence1.tmx");
     this->addChild(tiledMap, 0);
    tiledMap->setScale(3);
@@ -34,7 +37,9 @@ bool othersence::init()
         CCLOG("Error: Failed to create character!");
         return false;
     }
+
     auto button = ui::Button::create("picture/out1.png", "picture/out2.png"); // ��ť������״̬�Ͱ���״̬ͼƬ
+
     button->setPosition(Vec2(3700,100));
     this->addChild(button);
 
@@ -42,16 +47,19 @@ bool othersence::init()
     this->addChild(characteraction);
 
     this->scheduleUpdate();
+
     // ��ÿ֡�и����ӵ�λ�ã�ʹ��ͼʼ�ո�������
     this->schedule([=](float deltaTime) {
         // ��ȡ���ﵱǰ����������
         Vec2 characterPosition = characteraction->getPosition();
 
         // �����ӵ㣬ȷ����ͼʼ�ո�������
+
         setViewPointCenter(characterPosition, tiledMap);
         }, "view_point_update_key");
 
     button->addClickEventListener([=](Ref* sender) {
+
         // �ص��ɳ���ʱ�ָ�״̬
         //Scene* previousScene = outside::createSceneWithMapIndex(1); // �����ɳ���
         characteraction->setPosition(SceneStateManager::getInstance()->getCharacterPosition());
@@ -61,6 +69,7 @@ bool othersence::init()
          * 通过GameSceneFacade统一管理场景返回，而不是直接调用Director
          */
         GameSceneFacade::returnToPreviousScene();
+
         });
 
     return true;
@@ -68,6 +77,7 @@ bool othersence::init()
 
 void othersence::setViewPointCenter(Point position, cocos2d::TMXTiledMap* tiledMap) {
     const auto winSize = Director::getInstance()->getWinSize();
+
     float scale = tiledMap->getScale(); // ��ȡ��ǰ�����ű���
 
     // ����ʵ�ʵ���ͼ�������꣨�������ţ�
@@ -92,5 +102,6 @@ void othersence::setViewPointCenter(Point position, cocos2d::TMXTiledMap* tiledM
     auto viewPoint = centerOfView - actualPosition;
 
     // ������ͼλ��
+
     this->setPosition(viewPoint);
 }

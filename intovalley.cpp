@@ -6,6 +6,7 @@
 #include "characterAciton.h"
 #include "GameSceneFacade.h"
 
+
 USING_NS_CC;
 
 Scene* intovalley::createintovalleyScene()
@@ -24,6 +25,7 @@ bool intovalley::init()
     {
         return false;
     }
+
     //���ÿ�ʼ����
     auto spriteback = Sprite::create("picture/home.png");
     spriteback->setAnchorPoint(Vec2::ZERO);
@@ -47,6 +49,7 @@ bool intovalley::init()
     this->addChild(characteraction);
 
     this->scheduleUpdate();
+
     // ��ÿ֡�и����ӵ�λ�ã�ʹ��ͼʼ�ո�������
     this->schedule([=](float deltaTime) {
         // ��ȡ���ﵱǰ����������

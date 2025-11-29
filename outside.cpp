@@ -13,6 +13,7 @@
 #include "Animal.h"
 #include "GameSceneFacade.h"
 
+
 using namespace CocosDenshion;
 
 USING_NS_CC;
@@ -137,6 +138,7 @@ void outside::loadMapBackground(int mapIndex) {
                     tiledMap->getName()
                 );
                 
+
                 /**
                  * 使用Facade模式重构后的代码
                  * 如果人物进入指定范围，则切换场景
@@ -144,6 +146,7 @@ void outside::loadMapBackground(int mapIndex) {
                  */
                 if (!inZones["zone1"]) {
                     GameSceneFacade::enterHouseScene();
+
                     inZones["zone1"] =true;
                 }
                 else
@@ -162,6 +165,7 @@ void outside::loadMapBackground(int mapIndex) {
                  */
                 if (!inZones["zone2"]) {
                     GameSceneFacade::enterOtherAreaScene();
+
                     inZones["zone2"] = true;
                 }
                 else

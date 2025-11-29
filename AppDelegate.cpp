@@ -26,6 +26,7 @@
 #include "valleybegin.h"
 #include "GameSceneFacade.h"
 
+
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
 
@@ -118,11 +119,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
+
     /**
      * 使用Facade模式重构后的代码
      * 通过GameSceneFacade统一管理场景启动，而不是直接调用Director和valleybegin
      */
     GameSceneFacade::runWithBeginScene();
+
 
     return true;
 }

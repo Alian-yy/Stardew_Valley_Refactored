@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "GameSceneFacade.h"
 
+
 using namespace CocosDenshion;
 
 USING_NS_CC;
@@ -27,7 +28,9 @@ bool valleybegin::init()
         return false;
     }
     log("11111");
+
     //���ÿ�ʼ����
+
     auto spriteback = Sprite::create("picture/background.png");
     spriteback->setAnchorPoint(Vec2::ZERO);
     spriteback->setPosition(Vec2(0, 0));
@@ -35,7 +38,9 @@ bool valleybegin::init()
 
     timerunning = false;
 
+
     //��ʼ���˳���ť
+
     auto startBtn = MenuItemImage::create("picture/startBtn1.png","picture/startBtn2.png"
         ,CC_CALLBACK_1(valleybegin::Startgame,this));
     startBtn->setPosition(Vec2(800, 520));
@@ -62,11 +67,13 @@ bool valleybegin::init()
 
 
 void valleybegin::Startgame(Ref* obj) {
+
     /**
      * 使用Facade模式重构后的代码
      * 通过GameSceneFacade统一管理场景切换，而不是直接调用Director和menu
      */
     GameSceneFacade::showMenuScene();
+
     timerunning = true;
 }
 

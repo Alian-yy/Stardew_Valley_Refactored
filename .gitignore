@@ -1,0 +1,7 @@
+# VS 本地缓存
+.vs/
+
+# VSCode 或其他编辑器缓存
+.vscode/
+.idea/
+
