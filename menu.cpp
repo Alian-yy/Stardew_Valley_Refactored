@@ -340,6 +340,7 @@ void menu::onMapRadioButtonSelected(RadioButton* radioButton, int index) {
 
         selectedMapIndex = index; // ���浱ǰѡ�еĵ�ͼ����
         log("Selected Map Index: %d", selectedMapIndex);
+        // ==================== 外观模式: 重构场景切换 ====================
         /**
          * 使用Facade模式重构后的代码
          * 通过GameSceneFacade统一管理场景切换，而不是直接调用Director和outside
