@@ -57,7 +57,7 @@ bool intovalley::init()
 
         button->addClickEventListener([&](Ref* sender) {
             // �ص��ɳ���ʱ�ָ�״̬
-            
+            // ==================== 外观模式: 重构场景返回 ====================
             /**
              * 使用Facade模式重构后的代码
              * 通过GameSceneFacade统一管理场景返回，而不是直接调用Director和outside
