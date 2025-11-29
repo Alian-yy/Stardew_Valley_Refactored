@@ -1,3 +1,8 @@
+/****************************************************************************
+ *
+ * 使用观察者模式和外观模式重构后的代码
+ *
+ ****************************************************************************/
 #include "outside.h"
 #include"cocostudio/CocoStudio.h"
 #include"ui/CocosGUI.h"
@@ -12,7 +17,10 @@
 #include "SceneStateManager.h"
 #include "Animal.h"
 #include "GameSceneFacade.h"
-
+ // ==================== 使用观察者模式重构新增====================
+#include "EventCenter.h"   
+#include "EventType.h"     
+#include "EventData.h"    
 
 using namespace CocosDenshion;
 
@@ -434,9 +442,13 @@ bool outside::init()
     
   
     this->scheduleUpdate();
-    
+     // ==================== 使用观察者模式重构新增：注册为全局事件观察者 ====================
+    EventCenter::getInstance()->attach(this);
+
     return true;
 }
+// ==================== 使用观察者模式重构修改updateTime函数：改为“发布 MinuteChanged 事件” ====================
+//**updateTime 只负责“产生时间数据 + 发布事件”;具体 UI 更新放到 onNotify 中//
 
 void outside::updateTime(float dt) {
 
@@ -455,20 +467,38 @@ void outside::updateTime(float dt) {
     timeinfo->tm_min += elapsedTime / 60;
     mktime(timeinfo); // 更新时间结构体
 
-    // 更新Label
+    // 格式化时间为字符串
     char buffer[80];
-    std::strftime(buffer, sizeof(buffer), "%H:%M", timeinfo); 
+    std::strftime(buffer, sizeof(buffer), "%H:%M", timeinfo);
 
-    // 获取Label并更新字符串
-    auto label = dynamic_cast<Label*>(getChildByName("timeLabel"));
-    if (label) {
-        label->setString(buffer);
+    // ★ 新增：不在这里直接改 Label，而是发布 MinuteChanged 事件
+    cocos2d::Value timeStr(buffer);
+    EventCenter::getInstance()->publish(EventType::MinuteChanged, this, timeStr);
+}
+// ==================== 使用观察者模式重构新增onNotify函数：真正处理 UI 更新” ====================
+
+void outside::onNotify(const EventData& event)
+{
+    switch (event.type) {
+    case EventType::MinuteChanged:
+    {
+        // 事件 extra 中存放的是时间字符串
+        std::string timeStr = event.extra.asString();
+
+        auto label = dynamic_cast<cocos2d::Label*>(getChildByName("timeLabel"));
+        if (label) {
+            label->setString(timeStr);
+        } else {
+            CCLOG("outside::onNotify - timeLabel not found.");
+        }
+        break;
     }
-    else {
-        // 如果转换失败或者没有找到对应的Label，则打印错误信息或者进行其他错误处理
-        CCLOG("Failed to get timeLabel or it's not a Label type");
+  
+    default:
+        break;
     }
 }
+
 
 void outside::setViewPointCenter(Point position, cocos2d::TMXTiledMap* tiledMap) {
     const auto winSize = Director::getInstance()->getWinSize();
@@ -928,4 +958,10 @@ void outside::closePersonalInterface(Ref* sender)
     // 移除个人界面层
     _personalInterfaceLayer->removeFromParent();
     _personalInterfaceLayer = nullptr;
+}
+
+ // ==================== 使用观察者模式重构新增：从事件中心注销 ====================
+outside::~outside()
+{
+    EventCenter::getInstance()->detach(this);
 }
