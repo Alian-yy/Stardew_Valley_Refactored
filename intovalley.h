@@ -6,6 +6,7 @@
 #include "outside.h"
 #include "valleybegin.h"
 
+class CharacterWithTools;
 
 class intovalley : public cocos2d::Layer
 {

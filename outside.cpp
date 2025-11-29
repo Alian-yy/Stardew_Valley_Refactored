@@ -339,6 +339,7 @@ bool outside::init()
 
     auto timeLabel = Label::createWithTTF(currentTime, "fonts/Marker Felt.ttf", 40);
     timeLabel->setPosition(Vec2(3 * 1500 - 125, 3 * 1100 + 1450 - 170));//1400, 1405
+    timeLabel->setName("timeLabel");
     this->addChild(timeLabel, 1);
 
     // 更新游戏内时间

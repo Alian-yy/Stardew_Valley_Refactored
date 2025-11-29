@@ -11,7 +11,6 @@
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
 #include "menu.h"
-#include "characterAction.h"
 
 
 USING_NS_CC;

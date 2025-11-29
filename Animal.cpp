@@ -7,6 +7,7 @@
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
 #include "Animal.h"
+#include "AnimalState.h"
 
 USING_NS_CC;
 

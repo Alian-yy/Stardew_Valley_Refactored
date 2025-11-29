@@ -9,6 +9,7 @@
 
 #include "cocos2d.h"
 #include "Animal.h"
+#include "AnimationStrategy.h"
 #include <memory>
 USING_NS_CC;
 

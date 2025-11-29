@@ -8,6 +8,7 @@
 #include "intovalley.h"
 #include "GameTimeSystem.h"
 #include "Plantingcrops.h"
+#include "characterAction.h"
 // ==================== 使用观察者模式重构新增 ====================
 #include "EventCenter.h"   // 新增
 #include "EventType.h"     // 新增

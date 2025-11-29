@@ -13,7 +13,6 @@
 #include "menu.h"
 #include "GameTimeSystem.h"
 #include "Plantingcrops.h"
-#include "CharacterWithTools.h"
 
 std::map<Vec2, bool> cropPositions;
 

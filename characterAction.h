@@ -7,9 +7,10 @@
 #ifndef __CHARACTER_WITH_TOOLS_H__
 #define __CHARACTER_WITH_TOOLS_H__
 #include "cocos2d.h"
-#include "Plantingcrops.h"
 
 USING_NS_CC;
+
+class Crop;
 
 extern std::map<Vec2, bool> cropPositions;
 
@@ -52,7 +53,7 @@ static Sprite* getPooledTool(const std::string& filename) {
     return Sprite::create(filename);
 }
 
-33 // ==================== 对象池模式：新增recycleTool ====================
+// ==================== 对象池模式：新增recycleTool ====================
 static void recycleTool(Sprite* tool, const std::string& filename) {
     tool->stopAllActions();
     tool->setVisible(false);
