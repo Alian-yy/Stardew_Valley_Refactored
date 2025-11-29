@@ -29,7 +29,7 @@ bool valleybegin::init()
     }
     log("11111");
 
-    //���ÿ�ʼ����
+    //设置开始背景
 
     auto spriteback = Sprite::create("picture/background.png");
     spriteback->setAnchorPoint(Vec2::ZERO);
@@ -39,7 +39,7 @@ bool valleybegin::init()
     timerunning = false;
 
 
-    //��ʼ���˳���ť
+    //开始与退出按钮
 
     auto startBtn = MenuItemImage::create("picture/startBtn1.png","picture/startBtn2.png"
         ,CC_CALLBACK_1(valleybegin::Startgame,this));
