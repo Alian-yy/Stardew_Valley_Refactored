@@ -138,7 +138,7 @@ void outside::loadMapBackground(int mapIndex) {
                     tiledMap->getName()
                 );
                 
-
+                // ==================== 外观模式: 重构场景切换 ====================
                 /**
                  * 使用Facade模式重构后的代码
                  * 如果人物进入指定范围，则切换场景
