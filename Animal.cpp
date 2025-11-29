@@ -16,6 +16,11 @@ Animal::Animal(){
     speed=1.0f;
 }
 
+Animal::~Animal(){
+   currentState.reset();
+   currentAnimation.reset();
+}
+
 Animal* Animal::create(const std::string& filename) {
     return nullptr;
 }
