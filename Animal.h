@@ -35,7 +35,7 @@ public:
     
     // 状态与行为动画控制
     void changeState(std::unique_ptr<AnimalState> newState);
-    void setAnimationStrategy(AnimationStrategy* strategy);
+    void setAnimationStrategy(std::unique_ptr<AnimationStrategy> strategy);
     
     // 获取方法
     Vec2 getTargetPosition() const { return targetPosition; }

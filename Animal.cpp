@@ -21,6 +21,13 @@ Animal::~Animal() {}
 Animal* Animal::create(const std::string& filename) {
     return nullptr;
 }
+
+bool Animal::init(const std::string& filename) {
+    if (!Sprite::initWithFile(filename)) return false;
+    this->scheduleUpdate(); 
+    return true;
+}
+
 void Animal::generateNewTarget() {
     float x = CCRANDOM_0_1() * Bounds.size.width + Bounds.origin.x;
     float y = CCRANDOM_0_1() * Bounds.size.height + Bounds.origin.y;
@@ -45,7 +52,7 @@ void Animal::changeState(std::unique_ptr<AnimalState> newState) {
 }
 
 // ====================策略模式：添加setAnimationStrategy ====================
-void Animal::setAnimationStrategy(AnimationStrategy* strategy) {
+void Animal::setAnimationStrategy(std::unique_ptr<AnimationStrategy> strategy) {
     currentAnimation.reset(strategy);
     if (strategy && this->isRunning()) {
         strategy->applyAnimation(this);
@@ -74,7 +81,6 @@ bool Sheep::init(const std::string& filename){
     }
     animPrefix = "animal/Sheep";
     changeState(std::make_unique<WanderingState>());
-    this->scheduleUpdate();
     return true;
 }
 
@@ -100,7 +106,6 @@ bool Cow::init(const std::string& filename) {
     }
     animPrefix = "animal/Cow";
     changeState(std::make_unique<WanderingState>());
-    this->scheduleUpdate();
     return true;
 }
 
@@ -127,7 +132,6 @@ bool Parrot::init(const std::string& filename) {
     }
     animPrefix = "animal/Parrot";
     changeState(std::make_unique<WanderingState>());
-    this->scheduleUpdate();
     return true;
 }
 
