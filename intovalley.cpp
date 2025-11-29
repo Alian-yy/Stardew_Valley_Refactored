@@ -26,7 +26,7 @@ bool intovalley::init()
         return false;
     }
 
-    //���ÿ�ʼ����
+    //设置开始背景
     auto spriteback = Sprite::create("picture/home.png");
     spriteback->setAnchorPoint(Vec2::ZERO);
     spriteback->setPosition(Vec2(700, 200));
@@ -38,7 +38,7 @@ bool intovalley::init()
         CCLOG("Error: Failed to create character!");
         return false;
     }
-    auto button = ui::Button::create("picture/out1.png", "picture/out2.png"); // ��ť������״̬�Ͱ���״̬ͼƬ
+    auto button = ui::Button::create("picture/out1.png", "picture/out2.png"); // 按钮的正常状态和按下状态图片
     button->setPosition(Vec2(975, 230));
     this->addChild(button);
 
@@ -50,13 +50,13 @@ bool intovalley::init()
 
     this->scheduleUpdate();
 
-    // ��ÿ֡�и����ӵ�λ�ã�ʹ��ͼʼ�ո�������
+    // 在每帧中更新视点位置，使地图始终跟随人物
     this->schedule([=](float deltaTime) {
-        // ��ȡ���ﵱǰ����������
+        // 获取人物当前的世界坐标
         Vec2 characterPosition = characteraction->getPosition();
 
         button->addClickEventListener([&](Ref* sender) {
-            // �ص��ɳ���ʱ�ָ�״̬
+            // 回到旧场景时恢复状态
             // ==================== 外观模式: 重构场景返回 ====================
             /**
              * 使用Facade模式重构后的代码
