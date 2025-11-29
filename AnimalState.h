@@ -28,7 +28,7 @@ class WanderingState : public AnimalState {
 public:
     void enter(Animal* animal) override {
         animal->setAnimationStrategy(
-            new GenericAnimationStrategy(animal->getAnimPrefix() + "_wander")
+            std::make_unique<GenericAnimationStrategy>(animal->getAnimPrefix() + "_wander")        
         );
         animal->generateNewTarget();
     }
@@ -55,7 +55,7 @@ public:
 
     void enter(Animal* animal) override {
         animal->setAnimationStrategy(
-            new GenericAnimationStrategy(animal->getAnimPrefix() + "_chase")
+            std::make_unique<GenericAnimationStrategy>(animal->getAnimPrefix() + "_chase")
         );
     }
 
@@ -80,7 +80,7 @@ private:
 public:
     void enter(Animal* animal) override {
         animal->setAnimationStrategy(
-            new GenericAnimationStrategy(animal->getAnimPrefix() + "_rest")
+            std::make_unique<GenericAnimationStrategy>(animal->getAnimPrefix() + "_rest")
         );
         restTime = 0.0f;
     }
