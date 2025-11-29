@@ -15,7 +15,7 @@ private:
     virtual ~GameTimeSystem();
     static GameTimeSystem* _instance;
 
-    long _startTime; // 游戏开始的时间
+    long _startTime; // 娓告垙寮�濮嬬殑鏃堕棿
 };
 
 #endif // GAMETIME_SYSTEM_H
