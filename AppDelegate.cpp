@@ -119,7 +119,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-
+    // ==================== 外观模式: 重构场景启动 ====================
     /**
      * 使用Facade模式重构后的代码
      * 通过GameSceneFacade统一管理场景启动，而不是直接调用Director和valleybegin
