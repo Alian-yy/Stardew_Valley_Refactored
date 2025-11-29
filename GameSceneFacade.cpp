@@ -15,9 +15,9 @@
 USING_NS_CC;
 
 // ==================== 外观模式: 新增runWithBeginScene ====================
-/**
- * 启动游戏，运行开场场景
- */
+
+//启动游戏，运行开场场景
+
 void GameSceneFacade::runWithBeginScene()
 {
     auto scene = valleybegin::createvalleybeginScene();
@@ -25,9 +25,9 @@ void GameSceneFacade::runWithBeginScene()
 }
 
 // ==================== 外观模式: 新增showMenuScene ====================
-/**
- * 从开场场景切换到菜单场景（带过渡动画）
- */
+
+//从开场场景切换到菜单场景（带过渡动画）
+ 
 void GameSceneFacade::showMenuScene()
 {
     Scene* scene = menu::createmenuScene();
@@ -35,9 +35,7 @@ void GameSceneFacade::showMenuScene()
 }
 
 // ==================== 外观模式: 新增enterFarmScene ====================
-/**
- * 从菜单场景进入农场场景
- */
+//从菜单场景进入农场场景
 void GameSceneFacade::enterFarmScene(int mapIndex)
 {
     auto newScene = outside::createSceneWithMapIndex(mapIndex);
@@ -45,9 +43,7 @@ void GameSceneFacade::enterFarmScene(int mapIndex)
 }
 
 // ==================== 外观模式: 新增enterHouseScene ====================
-/**
- * 从农场场景进入房屋场景
- */
+//从农场场景进入房屋场景
 void GameSceneFacade::enterHouseScene()
 {
     Scene* scene = intovalley::createintovalleyScene();
@@ -55,9 +51,9 @@ void GameSceneFacade::enterHouseScene()
 }
 
 // ==================== 外观模式: 新增enterOtherAreaScene ====================
-/**
- * 从农场场景进入其他区域场景
- */
+
+//从农场场景进入其他区域场景
+
 void GameSceneFacade::enterOtherAreaScene()
 {
     Scene* scene = othersence::createothersenceScene();
@@ -65,9 +61,8 @@ void GameSceneFacade::enterOtherAreaScene()
 }
 
 // ==================== 外观模式: 新增returnToPreviousScene ====================
-/**
- * 从子场景（房屋/其他区域）返回到上一个场景
- */
+//从子场景（房屋/其他区域）返回到上一个场景
+
 void GameSceneFacade::returnToPreviousScene()
 {
     if (Director::getInstance()->getRunningScene()) {
