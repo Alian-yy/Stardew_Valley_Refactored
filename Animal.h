@@ -10,8 +10,9 @@
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
 #include "AnimationStrategy.h"
-#include "AnimalState.h"
 USING_NS_CC;
+
+class AnimalState;
 
 class Animal : public Sprite {
 protected:
