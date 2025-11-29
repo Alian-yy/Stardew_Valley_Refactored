@@ -11,7 +11,7 @@
 #include "SimpleAudioEngine.h"
 #include "menu.h"
 #include "GameTimeSystem.h"
-#include "characterAciton.h"
+#include "characterAction.h"
 #include "Plantingcrops.h"
 #include "othersence.h"
 #include "SceneStateManager.h"

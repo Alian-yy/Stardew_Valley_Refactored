@@ -4,7 +4,7 @@
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
 #include "outside.h"
-#include "characterAciton.h"
+#include "characterAction.h"
 
 class othersence : public cocos2d::Layer
 {

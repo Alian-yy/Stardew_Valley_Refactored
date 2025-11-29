@@ -13,7 +13,7 @@
 #include "Observer.h"  //新增
 #include "EventData.h" //新增
 
-class outside : public cocos2d::Layer,, public Observer//新增
+class outside : public cocos2d::Layer, public Observer//新增
 {
 public:
     //static cocos2d::Scene* createoutsideScene();
