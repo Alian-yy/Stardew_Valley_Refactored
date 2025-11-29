@@ -30,7 +30,7 @@ bool menu::init()
     {
         return false;
     }
-    //���ÿ�ʼ����
+    //设置开始背景
 
     auto spriteback = Sprite::create("picture/menu.png");
     spriteback->setAnchorPoint(Vec2::ZERO);
@@ -39,7 +39,7 @@ bool menu::init()
     
    
     
-    //�����������
+    //设置你的名字
 
     std::string labelText1 = "Your name :";
     int fontSize = 40;
@@ -51,11 +51,11 @@ bool menu::init()
     label1->setPosition(labelPosition);
     this->addChild(label1);
 
-    //�����
+    //输入框
     auto frame1 = Sprite::create("picture/frame.png");
     frame1->setPosition(Vec2(1340, 900));
     this->addChild(frame1);
-    //�����������
+    //输入你的名字
 
     auto text1 = cocos2d::ui::TextField::create("Input ", "fonts/Marker Felt.ttf", 40);
     text1->setPosition(Vec2(1260, 900));
@@ -63,7 +63,7 @@ bool menu::init()
     text1->addEventListener([=](cocos2d::Ref* sender, cocos2d::ui::TextField::EventType eventType) {});
 
 
-    //�������ũ��������
+    //设置你的农场的名字
 
     std::string labelText2 = "Your farm's name :";
     Vec2 labe2Position = Vec2(1100, 800);
@@ -71,18 +71,18 @@ bool menu::init()
     label2->setPosition(labe2Position);
     this->addChild(label2);
 
-    //�����
+    //输入框
     auto frame2 = Sprite::create("picture/frame2.png");
     frame2->setPosition(Vec2(1420, 800));
     this->addChild(frame2);
-    //�������ũ��������
+    //输入你的农场的名字
 
     auto text2 = cocos2d::ui::TextField::create("Input ", "fonts/Marker Felt.ttf", 40);
     text2->setPosition(Vec2(1400, 800));
     this->addChild(text2);
     text2->addEventListener([=](cocos2d::Ref* sender, cocos2d::ui::TextField::EventType eventType) {});
 
-    //������ϲ����ʳ��
+    //设置最喜欢的食物
 
     std::string labelText3 = "Your favourite food :";
     Vec2 labe3Position = Vec2(1110, 700);
@@ -90,11 +90,11 @@ bool menu::init()
     label3->setPosition(labe3Position);
     this->addChild(label3);
 
-    //�����
+    //输入框
     auto frame3 = Sprite::create("picture/frame2.png");
     frame3->setPosition(Vec2(1430, 700));
     this->addChild(frame3);
-    //��������ϲ����ʳ�������
+    //输入你最喜欢的食物的名字
 
     auto text3 = cocos2d::ui::TextField::create("Input ", "fonts/Marker Felt.ttf", 40);
     text3->setPosition(Vec2(1400, 700));
@@ -102,7 +102,7 @@ bool menu::init()
     text3->addEventListener([=](cocos2d::Ref* sender, cocos2d::ui::TextField::EventType eventType) {});
 
 
-    //��ͼ��ѡ��
+    //地图单选框
 
    RadioButtonGroup* radioButtonmapGroup = RadioButtonGroup::create();
    this->addChild(radioButtonmapGroup);
@@ -110,7 +110,7 @@ bool menu::init()
        std::string normalImage = StringUtils::format("picture/ch%d.png", i);
        std::string selectedImage = StringUtils::format("picture/ch%d.png", i+1);
 
-       // ���� RadioButton��������������ѡ��״̬��ͼƬ
+       // 创建 RadioButton，并设置正常和选中状态的图片
 
        RadioButton* radioButtonmap = RadioButton::create(normalImage, selectedImage);
        radioButtonmap->setTag(j);
@@ -123,44 +123,41 @@ bool menu::init()
   
   
 
-   // ����һ���������ñ���ͼƬ
+   // 创建一个层来放置背景图片
    auto backgroundLayer = Layer::create();
    auto backgroundSprite = Sprite::create("picture/Character Backgrounds.png");
-   backgroundSprite->setPosition(Vec2(700,700)); // ���Ϸ�λ��
+   backgroundSprite->setPosition(Vec2(700,700)); // 左上方位置
    backgroundSprite->setScale(2);
    backgroundLayer->addChild(backgroundSprite);
 
-   // �����������ӵ�������
-   this->addChild(backgroundLayer, 1); // ȷ����������Ԫ��֮��
+   // 将背景层添加到场景中
+   this->addChild(backgroundLayer, 1); // 确保层在其他元素之上
 
-   // ����ѡ��ť
+   // 创建选择按钮
    leftButton = MenuItemImage::create(
-       "picture/male.png", // ��ఴťͼƬ
-       "picture/male.png", // ��ఴť����ʱ��ͼƬ
-       CC_CALLBACK_1(menu::onLeftButtonClicked, this) // ����¼��ص�
+       "picture/male.png", // 左侧按钮图片
+       "picture/male.png", // 左侧按钮按下时的图片
+       CC_CALLBACK_1(menu::onLeftButtonClicked, this) // 点击事件回调
    );
 
    rightButton = MenuItemImage::create(
-       "picture/female.png", // �ҲఴťͼƬ
-       "picture/female.png", // �Ҳఴť����ʱ��ͼƬ
-       CC_CALLBACK_1(menu::onRightButtonClicked, this) // ����¼��ص�
+       "picture/female.png", // 右侧按钮图片
+       "picture/female.png", // 右侧按钮按下时的图片
+       CC_CALLBACK_1(menu::onRightButtonClicked, this) // 点击事件回调
    );
 
-   // ���ð�ťλ��
+   // 设置按钮位置
    leftButton->setPosition(Vec2(620, 430));
    rightButton->setPosition(Vec2(800, 430));
 
-   // ��С��ť
-
+   // 缩小按钮
   
    leftButton->setScale(0.4);
    rightButton->setScale(0.4);
 
-
-   // �����˵������Ӱ�ť
+   // 创建菜单并添加按钮
    auto menu = Menu::create(leftButton, rightButton, NULL);
-   menu->setPosition(Vec2::ZERO); // ���˵�λ������Ϊ��
-
+   menu->setPosition(Vec2::ZERO); // 将菜单位置设置为零
    this->addChild(menu,3);
 
   
@@ -170,8 +167,7 @@ bool menu::init()
 
 
 
-   //èè���ǹ���
-
+     //猫猫还是狗狗
    std::string labelTexta = "Choose your lovely animal :";
    Vec2 labelaPosition = Vec2(1165, 600);
    auto labela = Label::createWithTTF(labelTexta, fontName, fontSize, Size::ZERO, hAlignment, vAlignment);
@@ -192,14 +188,12 @@ bool menu::init()
    }
    radioButtonanimalGroup->setSelectedButton(0);
 
-
-   //������ RadioButtonGroup ��ѡ������Ϊѡ����һ������������
-   // Ϊ��ͼ��ѡ���������¼�������
+   //将两个 RadioButtonGroup 的选择结果作为选择下一个场景的依据
+   // 为地图单选框组添加事件监听器
    radioButtonmapGroup->addEventListener(CC_CALLBACK_2(menu::onMapRadioButtonSelected, this));
    
 
-   //��ok����ť
-
+   //“ok”按钮
    auto ok = Button::create("picture/ok.png", "picture/ok2.png");
    ok->setPosition(Vec2(1500, 120));
    this->addChild(ok);
@@ -207,22 +201,18 @@ bool menu::init()
        switch (type)
        {
            case Widget::TouchEventType::BEGAN:
-
-               // ��ť������
+               // 按钮被按下
                break;
            case Widget::TouchEventType::ENDED:
-               // ��ť���ͷ�
-               // ִ�е����Ĳ���
-
+               // 按钮被释放
+               // 执行点击后的操作
                break;
            default:
                break;
        }
        });
 
-
-   //�������ֵ���
-
+   //背景音乐调节
    auto tool = Button::create("picture/tools.png", "picture/tools2.png");
    tool->setPosition(Vec2(1700, 110));
    this->addChild(tool);
@@ -235,9 +225,7 @@ bool menu::init()
                _backImage->setScale(0.9);
                this->addChild(_backImage);
                
-
-               //����
-
+               //内容
                int musicSize = 40;
                TextHAlignment mhAlignment = TextHAlignment::CENTER;
                TextVAlignment mvAlignment = TextVAlignment::CENTER;
@@ -256,25 +244,21 @@ bool menu::init()
                this->addChild(music2);
                music2->setTag(7);
 
-
-               //��ť
-
+               //按钮
                bottom = Button::create("picture/bottom.png", "picture/bottom2.png");
                bottom->setPosition(Vec2(950, 600));
                this->addChild(bottom);
                bottom->addTouchEventListener(CC_CALLBACK_2(menu::onButtonPressed, this));
 
-
-               //����
+               //滑块
                part= Slider::create();
                part->loadBarTexture("picture/part.png");
-               part->loadSlidBallTextures("picture/part_one.png", "picture/part_one2.png", ""); // ���鰴ť����
-               part->loadProgressBarTexture("picture/part2.png"); // ����������
-               part->setMaxPercent(100); // �������ֵ
-               part->setPercent(50); // ���ó�ʼֵ
-               part->setPosition(Vec2(1000, 750)); // ����λ��
-               part->addEventListener(CC_CALLBACK_2(menu::onSliderValueChanged, this)); // �����¼�������
-
+               part->loadSlidBallTextures("picture/part_one.png", "picture/part_one2.png", ""); // 滑块按钮纹理
+               part->loadProgressBarTexture("picture/part2.png"); // 进度条纹理
+               part->setMaxPercent(100); // 设置最大值
+               part->setPercent(50); // 设置初始值
+               part->setPosition(Vec2(1000, 750)); // 设置位置
+               part->addEventListener(CC_CALLBACK_2(menu::onSliderValueChanged, this)); // 添加事件监听器
                this->addChild(part);
 
                _isLayerVisible = true;
@@ -316,29 +300,26 @@ void menu::textFieldEvent(Ref* sender, TextField::EventType type)
     switch (type)
     {
         case TextField::EventType::ATTACH_WITH_IME:
-
-            // ��������ý���ʱ����
+            // 当输入框获得焦点时调用
             break;
         case TextField::EventType::DETACH_WITH_IME:
-            // �������ʧȥ����ʱ����
+            // 当输入框失去焦点时调用
             break;
         case TextField::EventType::INSERT_TEXT:
-            // ���ı�������ʱ����
+            // 当文本被插入时调用
             break;
         case TextField::EventType::DELETE_BACKWARD:
-            // ���ı���ɾ��ʱ����
-
+            // 当文本被删除时调用
             break;
         default:
             break;
     }
 }
 
-
 void menu::onMapRadioButtonSelected(RadioButton* radioButton, int index) {
     if (radioButton) {
 
-        selectedMapIndex = index; // ���浱ǰѡ�еĵ�ͼ����
+        selectedMapIndex = index; // 保存当前选中的地图索引
         log("Selected Map Index: %d", selectedMapIndex);
         // ==================== 外观模式: 重构场景切换 ====================
         /**
@@ -375,61 +356,55 @@ void menu::onSliderValueChanged(Ref* sender, Slider::EventType type)
         Slider* slider = dynamic_cast<Slider*>(sender);
         int percent = slider->getPercent();
         log("Slider value changed: %d", percent);
-
-        // �������������ϣ���ڻ���ֵ�ı�ʱִ�еĴ���
-
+        // 这里可以添加您希望在滑块值改变时执行的代码
     }
 }
 
 
 
 void menu::onLeftButtonClicked(Ref* sender) {
+    // 移除之前的层图片（如果存在）
+    this->removeChildByTag(6); // 使用标签 2 来标识层图片
 
-    // �Ƴ�֮ǰ�Ĳ�ͼƬ��������ڣ�
-    this->removeChildByTag(6); // ʹ�ñ�ǩ 2 ����ʶ��ͼƬ
-
-    // �ڱ����Ϸ��õ�һ����ͼƬ
-    auto layerSprite1 = Sprite::create("picture/boy1.png"); // �滻Ϊ���Ĳ�ͼƬ
+    // 在背景上放置第一个层图片
+    auto layerSprite1 = Sprite::create("picture/boy1.png"); // 替换为您的层图片
     layerSprite1->setPosition(Vec2(700, 730));
 
-    // �������ű�����������С
-    float scaleFactor = 0.2f; // ������Ҫ�������ű���
+    // 设置缩放比例，调整大小
+    float scaleFactor = 0.2f; // 根据需要调整缩放比例
     layerSprite1->setScale(scaleFactor);
 
-    this->addChild(layerSprite1, 2, 6); // ȷ�����ڱ����Ϸ�����ʹ�ñ�ǩ 2
+    this->addChild(layerSprite1, 2, 6); // 确保层在背景上方，并使用标签 2
 
-    // �л���ťͼƬ
-    leftButton->setNormalImage(Sprite::create("picture/chmale.png")); // �л�Ϊѡ��״̬��ͼƬ
-    rightButton->setNormalImage(Sprite::create("picture/female.png")); // �л�Ϊδѡ��״̬��ͼƬ
+    // 切换按钮图片
+    leftButton->setNormalImage(Sprite::create("picture/chmale.png")); // 切换为选中状态的图片
+    rightButton->setNormalImage(Sprite::create("picture/female.png")); // 切换为未选中状态的图片
 
-    // ������С chmale
-    float chmaleScaleFactor = 0.3f; // ������Ҫ�������ű���
-    leftButton->setScale(chmaleScaleFactor); // ���� chmale �����ű���
-
+    // 单独缩小 chmale
+    float chmaleScaleFactor = 0.3f; // 根据需要调整缩放比例
+    leftButton->setScale(chmaleScaleFactor); // 设置 chmale 的缩放比例
 }
 
 
 void menu::onRightButtonClicked(Ref* sender) {
+    // 移除之前的层图片（如果存在）
+    this->removeChildByTag(6); // 使用标签 2 来标识层图片
 
-    // �Ƴ�֮ǰ�Ĳ�ͼƬ��������ڣ�
-    this->removeChildByTag(6); // ʹ�ñ�ǩ 2 ����ʶ��ͼƬ
-
-    // �ڱ����Ϸ��õڶ�����ͼƬ
-    auto layerSprite2 = Sprite::create("picture/girl1.png"); // �滻Ϊ���Ĳ�ͼƬ
+    // 在背景上放置第二个层图片
+    auto layerSprite2 = Sprite::create("picture/girl1.png"); // 替换为您的层图片
     layerSprite2->setPosition(Vec2(690,720));
 
-    // �������ű�����������С
-    float scaleFactor = 0.2f; // ������Ҫ�������ű���
+    // 设置缩放比例，调整大小
+    float scaleFactor = 0.2f; // 根据需要调整缩放比例
     layerSprite2->setScale(scaleFactor);
 
-    this->addChild(layerSprite2, 2, 6); // ȷ�����ڱ����Ϸ�����ʹ�ñ�ǩ 2
+    this->addChild(layerSprite2, 2, 6); // 确保层在背景上方，并使用标签 2
 
-    // �л���ťͼƬ
-    rightButton->setNormalImage(Sprite::create("picture/chfemale.png")); // �л�Ϊѡ��״̬��ͼƬ
-    leftButton->setNormalImage(Sprite::create("picture/male.png")); // �л�Ϊδѡ��״̬��ͼƬ
+    // 切换按钮图片
+    rightButton->setNormalImage(Sprite::create("picture/chfemale.png")); // 切换为选中状态的图片
+    leftButton->setNormalImage(Sprite::create("picture/male.png")); // 切换为未选中状态的图片
 
-    // ������С chfemale
-    float chfemaleScaleFactor = 0.35f; // ������Ҫ�������ű���
-    rightButton->setScale(chfemaleScaleFactor); // ���� chfemale �����ű���
-
+    // 单独缩小 chfemale
+    float chfemaleScaleFactor = 0.35f; // 根据需要调整缩放比例
+    rightButton->setScale(chfemaleScaleFactor); // 设置 chfemale 的缩放比例
 }
