@@ -66,12 +66,43 @@ public:
 };
 
 
+// ====================Factory Pattern: add AnimalFactory====================
 
-
-// create AnimalFactory
 class AnimalFactory {
 public:
-    static Animal* createAnimal(const std::string& filename);
+    virtual ~AnimalFactory() = default;
+    virtual Animal* createAnimal(const std::string& filename) = 0;
+};
+
+// Concrete factory class: Sheep Factory
+class SheepFactory : public AnimalFactory {
+public:
+    Animal* createAnimal(const std::string& filename) override;
+};
+
+// Concrete factory class: Cow Factory
+class CowFactory : public AnimalFactory {
+public:
+    Animal* createAnimal(const std::string& filename) override;
+};
+
+// Concrete factory class: Parrot Factory
+class ParrotFactory : public AnimalFactory {
+public:
+    Animal* createAnimal(const std::string& filename) override;
+};
+
+// Factory manager class
+class AnimalFactoryManager {
+private:
+    static std::unordered_map<std::string, std::unique_ptr<AnimalFactory>> factories;
+
+public:
+    static void registerFactory(const std::string& animalType, std::unique_ptr<AnimalFactory> factory);
+    static Animal* createAnimal(const std::string& animalType, const std::string& filename);
+    static void initializeFactories();
 };
 
 #endif // !_ANIMAL_H_
+
+

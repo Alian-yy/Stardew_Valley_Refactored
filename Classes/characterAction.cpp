@@ -1,7 +1,7 @@
 ﻿/****************************************************************************
-* 使用生成器模式和对象池模式的角色实现代码
-* CharacterWithTools.cpp - 角色功能实现
-* 实现角色动画构建、工具使用、作物种植等功能，结合对象池优化资源管理
+*
+* Character implementation with Builder Pattern and Object Pool Pattern
+* 
 ****************************************************************************/
 #include "characterAction.h"
 #include "outside.h"
@@ -44,7 +44,7 @@ bool CharacterWithTools::init(const std::string& filename) {
 
     velocity = Vec2::ZERO;
 
-    // ========== 生成器模式：使用 AnimationBuilder 构建动画 ==========
+    // ========== Builder Pattern: Build animations with AnimationBuilder ==========
     walkLeftAnimation = AnimationBuilder().from("character/Danaleft").frames(1, 3).delay(0.1f).build();
     walkLeftAnimate = Animate::create(walkLeftAnimation); walkLeftAnimate->retain();
 
@@ -57,7 +57,7 @@ bool CharacterWithTools::init(const std::string& filename) {
     walkDownAnimation = AnimationBuilder().from("character/Dana").frames(1, 3).delay(0.1f).build();
     walkDownAnimate = Animate::create(walkDownAnimation); walkDownAnimate->retain();
 
-    // 键盘事件
+    // Keyboard events
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = CC_CALLBACK_2(CharacterWithTools::onKeyPressed, this);
     listener->onKeyReleased = CC_CALLBACK_2(CharacterWithTools::onKeyReleased, this);
@@ -97,9 +97,9 @@ void CharacterWithTools::move() {
     }
 }
 
-// ==================== 对象池模式：新增usetools ====================
+// ==================== Object Pool Pattern: Add usetools ====================
 /**
- * 工具使用实现
+ * Tool usage implementation
  */
 void CharacterWithTools::usetools(const std::string& filename) {
     Sprite* tool = getPooledTool(filename);
@@ -159,9 +159,9 @@ bool CharacterWithTools::checkCrop(Vec2 position) {
     return cropPositions.find(gp) != cropPositions.end() && cropPositions[gp];
 }
 
-// ==================== 对象池模式：新增plantcrop ====================
+// ==================== Object Pool Pattern: Add plantcrop ====================
 /**
- * 作物种植实现
+ * Crop planting implementation
  */
 void CharacterWithTools::plantcrop(Vec2 position) {
     int gx = position.x / gridWidth;

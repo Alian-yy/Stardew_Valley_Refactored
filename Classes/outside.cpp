@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * 使用观察者模式和外观模式重构后的代码
+ * Refactored with Observer Pattern and Facade Pattern
  *
  ****************************************************************************/
 #include "outside.h"
@@ -147,11 +147,11 @@ void outside::loadMapBackground(int mapIndex) {
                     tiledMap->getName()
                 );
                 
-                // ==================== 外观模式: 重构场景切换 ====================
+                // ==================== Facade Pattern: Refactored Scene Transition ====================
                 /**
-                 * 使用Facade模式重构后的代码
-                 * 如果人物进入指定范围，则切换场景
-                 * 通过GameSceneFacade统一管理场景切换，而不是直接调用Director和intovalley
+                 * Refactored with Facade Pattern
+                 * If the character enters the specified range, switch scene
+                 * Manages scene transition uniformly via GameSceneFacade, instead of directly calling Director and intovalley
                  */
                 if (!inZones["zone1"]) {
                     GameSceneFacade::enterHouseScene();
@@ -168,9 +168,9 @@ void outside::loadMapBackground(int mapIndex) {
                 characterPosition.y <= 4770)
             {
                 /**
-                 * 使用Facade模式重构后的代码
-                 * 如果人物进入指定范围，则切换场景
-                 * 通过GameSceneFacade统一管理场景切换，而不是直接调用Director和othersence
+                 * Refactored with Facade Pattern
+                 * If the character enters the specified range, switch scene
+                 * Manages scene transition uniformly via GameSceneFacade, instead of directly calling Director and othersence
                  */
                 if (!inZones["zone2"]) {
                     GameSceneFacade::enterOtherAreaScene();

@@ -321,10 +321,10 @@ void menu::onMapRadioButtonSelected(RadioButton* radioButton, int index) {
 
         selectedMapIndex = index; // 保存当前选中的地图索引
         log("Selected Map Index: %d", selectedMapIndex);
-        // ==================== 外观模式: 重构场景切换 ====================
+        // ==================== Facade Pattern: Refactored Scene Transition ====================
         /**
-         * 使用Facade模式重构后的代码
-         * 通过GameSceneFacade统一管理场景切换，而不是直接调用Director和outside
+         * Refactored with Facade Pattern
+         * Manages scene transition uniformly via GameSceneFacade, instead of directly calling Director and outside
          */
         GameSceneFacade::enterFarmScene(selectedMapIndex);
 
