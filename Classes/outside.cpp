@@ -17,7 +17,7 @@
 #include "SceneStateManager.h"
 #include "Animal.h"
 #include "GameSceneFacade.h"
- // ==================== 使用观察者模式重构新增====================
+ // ==================== Observer ====================
 #include "EventCenter.h"   
 #include "EventType.h"     
 #include "EventData.h"    
@@ -443,13 +443,13 @@ bool outside::init()
     
   
     this->scheduleUpdate();
-     // ==================== 使用观察者模式重构新增：注册为全局事件观察者 ====================
+     // ==================== Observer:Add global event observer registration ====================
     EventCenter::getInstance()->attach(this);
 
     return true;
 }
-// ==================== 使用观察者模式重构修改updateTime函数：改为“发布 MinuteChanged 事件” ====================
-//**updateTime 只负责“产生时间数据 + 发布事件”;具体 UI 更新放到 onNotify 中//
+// ==================== Observer:updateTime modified to “publish MinuteChanged event” ====================
+//**updateTime only generates time data and publishes the event; UI updates are handled inside onNotify//
 
 void outside::updateTime(float dt) {
 
@@ -472,11 +472,11 @@ void outside::updateTime(float dt) {
     char buffer[80];
     std::strftime(buffer, sizeof(buffer), "%H:%M", timeinfo);
 
-    // ★ 新增：不在这里直接改 Label，而是发布 MinuteChanged 事件
+    // new:instead of directly modifying the Label here, publish the MinuteChanged event
     cocos2d::Value timeStr(buffer);
     EventCenter::getInstance()->publish(EventType::MinuteChanged, this, timeStr);
 }
-// ==================== 使用观察者模式重构新增onNotify函数：真正处理 UI 更新” ====================
+// ==================== Observer:Add onNotify function: responsible for performing the actual UI update ====================
 
 void outside::onNotify(const EventData& event)
 {
@@ -961,7 +961,7 @@ void outside::closePersonalInterface(Ref* sender)
     _personalInterfaceLayer = nullptr;
 }
 
- // ==================== 使用观察者模式重构新增：从事件中心注销 ====================
+ // ==================== Observer:Add unregister from the EventCenter ====================
 outside::~outside()
 {
     EventCenter::getInstance()->detach(this);

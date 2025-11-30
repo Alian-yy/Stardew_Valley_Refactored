@@ -1,6 +1,6 @@
 ﻿/****************************************************************************
  *
- * 使用观察者模式重构后的代码
+ * Refactored with Observer Pattern
  *
  ****************************************************************************/
  
@@ -9,19 +9,19 @@
 #include"cocostudio/CocoStudio.h"
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
-// ==================== 使用观察者模式重构新增：从事件中心注销 ====================
-#include "Observer.h"  //新增
-#include "EventData.h" //新增
+// ==================== Observer：Unregister from the EventCenter ====================
+#include "Observer.h"  
+#include "EventData.h" 
 
-class outside : public cocos2d::Layer, public Observer//新增
+class outside : public cocos2d::Layer, public Observer
 {
 public:
     //static cocos2d::Scene* createoutsideScene();
     virtual bool init();
 
-  // ==================== 使用观察者模式重构新增：类声明改为实现 Observer 接口，并增加析构函数 & onNotify ====================
-    virtual void onNotify(const EventData& event) override;//新增
-    virtual ~outside();   //新增
+  // ==================== Observer：change the class declaration to implement the Observer interface, and add both a destructor and an onNotify method. ====================
+    virtual void onNotify(const EventData& event) override;
+    virtual ~outside();  
 
     void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event, cocos2d::TMXTiledMap* tiledMap);
  

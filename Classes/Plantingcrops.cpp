@@ -1,6 +1,6 @@
 ﻿/****************************************************************************
  *
- * 使用工厂模式和对象池模式和观察者模式重构后的代码
+ * Refactored with Observer Pattern，the Factory Pattern and the Object Pool Pattern,
  *
  ****************************************************************************/
 #include "Crop.h"
@@ -9,9 +9,9 @@
 #include "GameTimeSystem.h"
 #include "Plantingcrops.h"
 #include "characterAction.h"
-// ==================== 使用观察者模式重构新增 ====================
-#include "EventCenter.h"   // 新增
-#include "EventType.h"     // 新增
+// ==================== Observer ====================
+#include "EventCenter.h"   
+#include "EventType.h"     
 
 USING_NS_CC;
 
@@ -74,9 +74,8 @@ void Crop::resetState() {
     }
 }
 
-// ==================== 使用观察者模式重构后的update函数 ====================
+// ==================== Observer：refactor update ====================
  
-
 void Crop::update(float delta) {
     // 1）未浇水，超过 2 倍成熟时间直接死亡
     if (growthTime >= matureTime * 2 && state != State::harvested
@@ -84,7 +83,7 @@ void Crop::update(float delta) {
         this->setTexture("plant/cropdead.png");
         state = State::dead;
 
-        // ★ 新增：通知“作物死亡”事件
+        //Add: publish "CropDead" event
         EventCenter::getInstance()->publish(EventType::CropDead, this);
     }
 
@@ -95,7 +94,7 @@ void Crop::update(float delta) {
             state = State::growing;
             this->setTexture("plant/cropgrowing.png");
 
-            // ★ 新增：通知“作物发芽”事件
+            //Add: publish "CropGerminated" event
             EventCenter::getInstance()->publish(EventType::CropGerminated, this);
         }
     }
@@ -106,7 +105,7 @@ void Crop::update(float delta) {
             state = State::matured;
             this->setTexture("plant/cropmature.png");
 
-            // ★ 新增：通知“作物成熟”事件
+            //Add: publish "CropMatured" event
             EventCenter::getInstance()->publish(EventType::CropMatured, this);
         } 
     }
@@ -117,7 +116,7 @@ void Crop::update(float delta) {
             state = State::harvested;
             this->setTexture("plant/cropharvested.png");
 
-            // ★ 新增：通知“作物已收获(自动结束生命周期)”事件
+            //Add: publish "CropHarvested" event (auto lifecycle end)
             EventCenter::getInstance()->publish(EventType::CropHarvested, this);
         }
     }
@@ -140,8 +139,8 @@ void Crop::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 /**
 * 作物收获与回收
 */
-// ==================== 观察者模式：新增手动收获事件 ====================
-//补全系统缺失的核心事件通路，使外部模块能感知“作物被收获”这一关键行为。
+// ==================== Observer：Add manual-harvest event. ====================
+//Completed the missing core event flow, enabling external modules to perceive the key action: crop being harvested.
 void Crop::harvest()
 {
     if (state == State::harvested || state == State::dead) {
@@ -152,7 +151,7 @@ void Crop::harvest()
         Vec2 grid(gridX, gridY);
         cropPositions[grid] = false;
 
-        // ★ 新增：手动收获事件
+        //Add manual-harvest event.
         EventCenter::getInstance()->publish(EventType::CropHarvested, this);
 
         this->removeFromParent();
