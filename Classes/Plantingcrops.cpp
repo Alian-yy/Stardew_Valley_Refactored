@@ -3,11 +3,10 @@
  * 使用工厂模式和对象池模式和观察者模式重构后的代码
  *
  ****************************************************************************/
-#include "Crop.h"
+#include "Plantingcrops.h"
 #include "SimpleAudioEngine.h"
 #include "intovalley.h"
 #include "GameTimeSystem.h"
-#include "Plantingcrops.h"
 #include "characterAction.h"
 // ==================== 使用观察者模式重构新增 ====================
 #include "EventCenter.h"   // 新增
@@ -144,7 +143,7 @@ void Crop::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 //补全系统缺失的核心事件通路，使外部模块能感知“作物被收获”这一关键行为。
 void Crop::harvest()
 {
-    if (state == State::harvested || state == State::dead) {
+    if (state == State::matured) {
         Vec2 pos = this->getPosition();
         int gridX = pos.x / gridWidth;
         int gridY = pos.y / gridHeight;

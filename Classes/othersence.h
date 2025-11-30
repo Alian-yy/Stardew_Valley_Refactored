@@ -4,7 +4,8 @@
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
 #include "outside.h"
-#include "characterAction.h"
+
+class CharacterWithTools;
 
 class othersence : public cocos2d::Layer
 {
@@ -17,7 +18,7 @@ public:
     void setViewPointCenter(Point position, cocos2d::TMXTiledMap* tiledMap);
   
 private:
-    class CharacterWithTools* characteraction;
+    CharacterWithTools* characteraction;
 };
 #endif // !_INTOVALLEY.H
 
