@@ -1,7 +1,6 @@
 /****************************************************************************
  * 
- * 使用适配器模式重构后的场景创建系统实现
- * SceneAdapter.cpp
+ * Scene Creation System Implementation Refactored with Adapter Pattern
  * 
  ****************************************************************************/
 
@@ -12,22 +11,20 @@
 #include "intovalley.h"
 #include "othersence.h"
 
-// ==================== 开场场景适配器实现 ====================
+// ==================== Valley Begin Scene Adapter Implementation ====================
 Scene* ValleyBeginSceneAdapter::createScene(const cocos2d::ValueMap& params) {
-    // 适配 valleybegin::createvalleybeginScene()
     return valleybegin::createvalleybeginScene();
 }
 
-// ==================== 菜单场景适配器实现 ====================
+// ==================== Menu Scene Adapter Implementation ====================
 Scene* MenuSceneAdapter::createScene(const cocos2d::ValueMap& params) {
-    // 适配 menu::createmenuScene()
+
     return menu::createmenuScene();
 }
 
-// ==================== 农场场景适配器实现 ====================
+// ==================== Farm Scene Adapter Implementation ====================
 Scene* FarmSceneAdapter::createScene(const cocos2d::ValueMap& params) {
-    // 适配 outside::createSceneWithMapIndex(int mapIndex)
-    // 从参数中获取 mapIndex，如果没有则使用默认值 0
+
     int mapIndex = 0;
     if (params.find("mapIndex") != params.end()) {
         mapIndex = params.at("mapIndex").asInt();
@@ -37,34 +34,34 @@ Scene* FarmSceneAdapter::createScene(const cocos2d::ValueMap& params) {
 }
 
 bool FarmSceneAdapter::canCreateScene(const cocos2d::ValueMap& params) const {
-    // 可以添加验证逻辑，例如检查地图索引是否有效
+    // Optional validation logic, e.g., check if map index is valid
     if (params.find("mapIndex") != params.end()) {
         int mapIndex = params.at("mapIndex").asInt();
-        return mapIndex >= 0 && mapIndex < 4; // 假设有4个地图
+        return mapIndex >= 0 && mapIndex < 4; // Assume 4 maps exist
     }
-    return true; // 如果没有指定 mapIndex，使用默认值，允许创建
+    return true; // If no mapIndex provided, allow creation
 }
 
-// ==================== 房屋场景适配器实现 ====================
+// ==================== House Scene Adapter Implementation ====================
 Scene* HouseSceneAdapter::createScene(const cocos2d::ValueMap& params) {
-    // 适配 intovalley::createintovalleyScene()
+
     return intovalley::createintovalleyScene();
 }
 
-// ==================== 其他区域场景适配器实现 ====================
+// ==================== Other Area Scene Adapter Implementation ====================
 Scene* OtherAreaSceneAdapter::createScene(const cocos2d::ValueMap& params) {
-    // 适配 othersence::createothersenceScene()
+
     return othersence::createothersenceScene();
 }
 
-// ==================== 场景适配器管理器实现 ====================
+// ==================== Scene Adapter Manager Implementation ====================
 SceneAdapterManager* SceneAdapterManager::getInstance() {
     static SceneAdapterManager instance;
     return &instance;
 }
 
 SceneAdapterManager::SceneAdapterManager() {
-    // 注册所有场景适配器
+    // Register all scene adapters
     registerAdapter("ValleyBegin", new ValleyBeginSceneAdapter());
     registerAdapter("Menu", new MenuSceneAdapter());
     registerAdapter("Farm", new FarmSceneAdapter());
@@ -73,7 +70,7 @@ SceneAdapterManager::SceneAdapterManager() {
 }
 
 SceneAdapterManager::~SceneAdapterManager() {
-    // 清理所有适配器
+    // Cleanup all adapters
     for (auto& pair : adapters) {
         delete pair.second;
     }
@@ -114,4 +111,3 @@ bool SceneAdapterManager::canCreateScene(const std::string& sceneType, const coc
     }
     return false;
 }
-

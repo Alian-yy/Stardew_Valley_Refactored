@@ -1,6 +1,6 @@
 /****************************************************************************
  * 
- * 使用Facade模式+适配器模式重构后的GameSceneFacade.cpp
+ * GameSceneFacade.cpp refactored using Facade Pattern + Adapter Pattern
  * 
  ****************************************************************************/
 
@@ -9,44 +9,43 @@
 
 USING_NS_CC;
 
-// ==================== 适配器模式: 获取适配器管理器 ====================
+// ==================== Adapter Pattern: Get Adapter Manager =================
 SceneAdapterManager* GameSceneFacade::getAdapterManager() {
     return SceneAdapterManager::getInstance();
 }
 
-// ==================== 外观模式: 新增runWithBeginScene ====================
-// ==================== 适配器模式: 通过适配器创建场景 ====================
-//启动游戏，运行开场场景
+// ==================== Facade: runWithBeginScene =============================
+// ==================== Adapter Pattern: Create scene via adapter =============
+// Start the game and run the opening scene
 
 void GameSceneFacade::runWithBeginScene()
 {
-    // 使用适配器创建场景，不再直接依赖 valleybegin 类
+    // Create scene using adapter instead of directly depending on valleybegin
     Scene* scene = getAdapterManager()->createScene("ValleyBegin");
     if (scene) {
         Director::getInstance()->runWithScene(scene);
     }
 }
 
-// ==================== 外观模式: 新增showMenuScene ====================
-// ==================== 适配器模式: 通过适配器创建场景 ====================
-//从开场场景切换到菜单场景（带过渡动画）
+// ==================== Facade: showMenuScene ==================================
+// ==================== Adapter Pattern: Create scene via adapter ==============
+// Switch from opening scene to menu scene with transition animation
  
 void GameSceneFacade::showMenuScene()
 {
-    // 使用适配器创建场景，不再直接依赖 menu 类
+    // Create scene using adapter instead of directly depending on menu class
     Scene* scene = getAdapterManager()->createScene("Menu");
     if (scene) {
         Director::getInstance()->replaceScene(TransitionCrossFade::create(0.5, scene));
     }
 }
 
-// ==================== 外观模式: 新增enterFarmScene ====================
-// ==================== 适配器模式: 通过适配器创建场景，传递参数 ====================
-//从菜单场景进入农场场景
+// ==================== Facade: enterFarmScene =====================================
+// ==================== Adapter Pattern: Create scene via adapter with parameters ========
+// Enter the farm scene from the menu scene
 void GameSceneFacade::enterFarmScene(int mapIndex)
 {
-    // 使用适配器创建场景，通过 ValueMap 传递参数
-    // 不再直接依赖 outside 类
+    // Use ValueMap to pass parameters, no longer directly depend on outside class
     ValueMap params;
     params["mapIndex"] = Value(mapIndex);
     
@@ -56,33 +55,33 @@ void GameSceneFacade::enterFarmScene(int mapIndex)
     }
 }
 
-// ==================== 外观模式: 新增enterHouseScene ====================
-// ==================== 适配器模式: 通过适配器创建场景 ====================
-//从农场场景进入房屋场景
+// ==================== Facade: enterHouseScene =====================================
+// ==================== Adapter Pattern: Create scene via adapter ====================
+// Enter house scene from farm scene
 void GameSceneFacade::enterHouseScene()
 {
-    // 使用适配器创建场景，不再直接依赖 intovalley 类
+    // Create scene using adapter instead of directly depending on intovalley class
     Scene* scene = getAdapterManager()->createScene("House");
     if (scene) {
         Director::getInstance()->pushScene(scene);
     }
 }
 
-// ==================== 外观模式: 新增enterOtherAreaScene ====================
-// ==================== 适配器模式: 通过适配器创建场景 ====================
-//从农场场景进入其他区域场景
+// ==================== Facade: enterOtherAreaScene ==============================
+// ==================== Adapter Pattern: Create scene via adapter ====================
+// Enter other area scene from farm scene
 
 void GameSceneFacade::enterOtherAreaScene()
 {
-    // 使用适配器创建场景，不再直接依赖 othersence 类
+    // Create scene using adapter instead of directly depending on othersence class
     Scene* scene = getAdapterManager()->createScene("OtherArea");
     if (scene) {
         Director::getInstance()->pushScene(scene);
     }
 }
 
-// ==================== 外观模式: 新增returnToPreviousScene ====================
-//从子场景（房屋/其他区域）返回到上一个场景
+// ==================== Facade: returnToPreviousScene ====================
+// Return from child scenes (house/other area) back to the previous scene
 
 void GameSceneFacade::returnToPreviousScene()
 {
@@ -90,4 +89,3 @@ void GameSceneFacade::returnToPreviousScene()
         Director::getInstance()->popScene();
     }
 }
-
