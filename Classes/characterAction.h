@@ -1,7 +1,7 @@
 ﻿/****************************************************************************
-* 使用生成器模式和对象池模式重构后的代码
-* characterAction.h - 带工具的角色类定义
-* 提供角色移动、工具使用、作物种植功能，通过对象池优化资源复用，生成器模式简化动画构建
+*
+* Refactored with Builder Pattern and Object Pool Pattern
+* 
 ****************************************************************************/
 #pragma once
 #ifndef __CHARACTER_WITH_TOOLS_H__
@@ -17,7 +17,7 @@ extern std::map<Vec2, bool> cropPositions;
 #define gridWidth 150.0f
 #define gridHeight 120.0f
 
-// ==================== 对象池模式：新增getPooledCrop ====================
+// ==================== Object Pool Pattern: Add getPooledCrop ====================
 static std::vector<Crop*> cropPool;
 static std::map<std::string, std::vector<Sprite*>> toolPool;
 
@@ -31,16 +31,16 @@ static Crop* getPooledCrop() {
     return Crop::create("plant/cropseed.png");
 }
 
-// ==================== 对象池模式：新增recycleCrop ====================
+// ==================== Object Pool Pattern: Add recycleCrop ====================
 static void recycleCrop(Crop* crop) {
     crop->stopAllActions();
     crop->setVisible(false);
     cropPool.push_back(crop);
 }
 
-// ==================== 对象池模式：新增getPooledTool ====================
+// ==================== Object Pool Pattern: Add getPooledTool ====================
 /**
-* 从工具对象池获取指定类型的工具实例
+* Get tool instance of specified type from tool object pool
 */
 static Sprite* getPooledTool(const std::string& filename) {
     auto& list = toolPool[filename];
@@ -53,16 +53,16 @@ static Sprite* getPooledTool(const std::string& filename) {
     return Sprite::create(filename);
 }
 
-// ==================== 对象池模式：新增recycleTool ====================
+// ==================== Object Pool Pattern: Add recycleTool ====================
 static void recycleTool(Sprite* tool, const std::string& filename) {
     tool->stopAllActions();
     tool->setVisible(false);
     toolPool[filename].push_back(tool);
 }
 
-// ==================== 生成器模式：新增AnimationBuilder动画构建器 ====================
+// ==================== Builder Pattern: Add AnimationBuilder ====================
 /**
-* 构建动画实例
+* Build animation instance
 */
 class AnimationBuilder {
 public:
