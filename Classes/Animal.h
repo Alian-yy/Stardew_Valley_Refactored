@@ -1,6 +1,6 @@
 ﻿/****************************************************************************
  * 
- *   使用状态模式重构后的新增的AnimalState.h
+ * Refactored with Factory Method, Strategy and State design patterns.
  * 
  ****************************************************************************/
 #ifndef _ANIMAL_H_
@@ -33,11 +33,9 @@ public:
     void generateNewTarget();
     void update(float delta);
     
-    // 状态与行为动画控制
     void changeState(std::unique_ptr<AnimalState> newState);
     void setAnimationStrategy(std::unique_ptr<AnimationStrategy> strategy);
     
-    // 获取方法
     Vec2 getTargetPosition() const { return targetPosition; }
     void setTargetPosition(const Vec2& pos) { targetPosition = pos; }
     float getSpeed() const { return speed; }
@@ -70,7 +68,7 @@ public:
 
 
 
-// 动物创建工厂
+// create AnimalFactory
 class AnimalFactory {
 public:
     static Animal* createAnimal(const std::string& filename);

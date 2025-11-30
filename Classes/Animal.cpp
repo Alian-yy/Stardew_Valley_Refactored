@@ -1,6 +1,6 @@
 /****************************************************************************
  * 
- * 使用工厂模式+策略模式+状态模式重构后的代码
+ * Refactored with Factory Method, Strategy and State design patterns.
  *
  ****************************************************************************/
 #include"cocostudio/CocoStudio.h"
@@ -41,7 +41,7 @@ void Animal::update(float delta) {
     }
 }
 
-// ====================行为模式：添加changeState ====================
+// ====================State: add changeState ====================
 void Animal::changeState(std::unique_ptr<AnimalState> newState) {
     if (currentState) {
         currentState->exit(this);
@@ -52,7 +52,7 @@ void Animal::changeState(std::unique_ptr<AnimalState> newState) {
     }
 }
 
-// ====================策略模式：添加setAnimationStrategy ====================
+// ====================Strategy: add setAnimationStrategy ====================
 void Animal::setAnimationStrategy(std::unique_ptr<AnimationStrategy> strategy) {
     currentAnimation.reset(strategy);
     if (strategy && this->isRunning()) {
@@ -136,7 +136,7 @@ bool Parrot::init(const std::string& filename) {
     return true;
 }
 
-// ==================== 工厂模式 ====================
+// ==================== Factory Method ====================
 Animal* AnimalFactory::createAnimal(const std::string& filename)
 {
     std::string lower = filename;
