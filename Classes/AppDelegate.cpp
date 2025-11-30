@@ -119,10 +119,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-    // ==================== 外观模式: 重构场景启动 ====================
+    // ==================== Facade Pattern: Refactored Scene Startup ====================
     /**
-     * 使用Facade模式重构后的代码
-     * 通过GameSceneFacade统一管理场景启动，而不是直接调用Director和valleybegin
+     * Refactored with Facade Pattern
+     * Manages scene startup uniformly via GameSceneFacade, instead of directly calling Director and valleybegin
      */
     GameSceneFacade::runWithBeginScene();
 
