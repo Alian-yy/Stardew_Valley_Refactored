@@ -1,7 +1,6 @@
 /****************************************************************************
  * 
- * Refactored with Facade Pattern + Adapter Pattern
- * GameSceneFacade.cpp
+ * Refactored with Facade Pattern + Adapter Pattern:add GameSceneFacade.cpp
  * 
  ****************************************************************************/
 
