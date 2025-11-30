@@ -57,10 +57,10 @@ bool intovalley::init()
 
         button->addClickEventListener([&](Ref* sender) {
             // 回到旧场景时恢复状态
-            // ==================== 外观模式: 重构场景返回 ====================
+            // ==================== Facade Pattern: Refactored Scene Startup ====================
             /**
-             * 使用Facade模式重构后的代码
-             * 通过GameSceneFacade统一管理场景返回，而不是直接调用Director和outside
+             * Refactored with Facade Pattern
+             * Manages scene startup uniformly via GameSceneFacade, instead of directly calling Director and outside
              */
             GameSceneFacade::returnToPreviousScene();
             });
