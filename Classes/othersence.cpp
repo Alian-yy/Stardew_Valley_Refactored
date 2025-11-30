@@ -63,10 +63,10 @@ bool othersence::init()
         //Scene* previousScene = outside::createSceneWithMapIndex(1);  // 创建旧场景
         characteraction->setPosition(SceneStateManager::getInstance()->getCharacterPosition());
         tiledMap->setName(SceneStateManager::getInstance()->getMapName());
-        // ==================== 外观模式: 重构场景返回 ====================
+        // ==================== Facade Pattern: Refactored Scene Return ====================
         /**
-         * 使用Facade模式重构后的代码
-         * 通过GameSceneFacade统一管理场景返回，而不是直接调用Director
+         * Refactored with Facade Pattern
+         * Manages scene return uniformly via GameSceneFacade, instead of directly calling Director
          */
         GameSceneFacade::returnToPreviousScene();
 
