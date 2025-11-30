@@ -1,6 +1,6 @@
 ﻿/****************************************************************************
  *
- * Refactored with Observer Pattern
+ * 使用观察者模式重构后的代码
  *
  ****************************************************************************/
  
@@ -9,19 +9,23 @@
 #include"cocostudio/CocoStudio.h"
 #include"ui/CocosGUI.h"
 #include "cocos2d.h"
-// ==================== Observer：Unregister from the EventCenter ====================
-#include "Observer.h"  
-#include "EventData.h" 
+// ==================== 使用观察者模式重构新增：从事件中心注销 ====================
+#include "Observer.h"  //新增
+#include "EventData.h" //新增
+#include "UIManager.h"
+#include "InputManager.h"
+#include "NPCManager.h"
+#include "EntityManager.h"
 
-class outside : public cocos2d::Layer, public Observer
+class outside : public cocos2d::Layer, public Observer//新增
 {
 public:
     //static cocos2d::Scene* createoutsideScene();
     virtual bool init();
 
-  // ==================== Observer：change the class declaration to implement the Observer interface, and add both a destructor and an onNotify method. ====================
-    virtual void onNotify(const EventData& event) override;
-    virtual ~outside();  
+  // ==================== 使用观察者模式重构新增：类声明改为实现 Observer 接口，并增加析构函数 & onNotify ====================
+    virtual void onNotify(const EventData& event) override;//新增
+    virtual ~outside();   //新增
 
     void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event, cocos2d::TMXTiledMap* tiledMap);
  
@@ -82,11 +86,7 @@ private:
     cocos2d::TMXLayer* _meta;
     cocos2d::TMXLayer* _foreground;
     cocos2d::TMXTiledMap* tiledMap_;
-    cocos2d::ui::ImageView* fishImage;
-    cocos2d::Sprite* fishman;
-    cocos2d::Sprite* spriteFish;
     //cocos2d::TMXTiledMap* tiledMap = nullptr;
-    bool _isfishingVisible;
     cocos2d::Rect targetArea;
     cocos2d::Sprite* _lastSprite = nullptr;
     cocos2d::MenuItemImage* _closeButton;   // 关闭按钮
@@ -102,6 +102,12 @@ private:
 
     cocos2d::Layer* _personalInterfaceLayer; // 个人界面层
     cocos2d::Sprite* _menuWindow;           // 菜单窗口
+    // UI 管理器（负责 timeLabel/dayLabel 等 UI 元素）
+    class UIManager* _uiManager;
+    // 输入管理器（键盘、触摸等）
+    class InputManager* _inputManager;
+    class NPCManager* _npcManager;
+    class EntityManager* _entityManager;
     bool _isPersonalInterfaceVisible;      // 跟踪个人界面是否可见
     int _currentImageIndex;                // 当前图像索引
     int _selectedButtonIndex;              // 选择按钮索引

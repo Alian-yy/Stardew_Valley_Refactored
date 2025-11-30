@@ -17,10 +17,11 @@
 #include "SceneStateManager.h"
 #include "Animal.h"
 #include "GameSceneFacade.h"
- // ==================== Observer ====================
+ // ==================== 使用观察者模式重构新增====================
 #include "EventCenter.h"   
 #include "EventType.h"     
 #include "EventData.h"    
+#include "TimePublisher.h"
 
 using namespace CocosDenshion;
 
@@ -225,125 +226,54 @@ bool outside::init()
     _rainParticleSystem->setEndSize(15.0f);
 
     this->scheduleOnce([&](float dt) {
+
+        // 创建实体管理器（管理动物/作物等场景实体）
+        _entityManager = EntityManager::create(this);
+        if (_entityManager) {
+            this->addChild(_entityManager);
+        }
         _rainParticleSystem->stopSystem(); // 停止粒子系统
         }, 40.0f, "stopRainTimer");
 
-    // 添加键盘事件监听器
-    auto keyboardListener = EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(outside::onKeyPressed, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    // 创建并启用输入管理器（处理键盘/输入）
+    _inputManager = new InputManager(this, [this]() {
+        // toggle UI when InputManager detects the key
+        if (_isPersonalInterfaceVisible) hidePersonalInterface(); else showPersonalInterface();
+    });
+    _inputManager->enable();
 
+    _uiManager = new UIManager(this);
 
-    // 创建 NPC1 
-    auto npcButton = Button::create("bag/npc1.png", "bag/npc2.png"); // 点击前为 npc1.png，点击后为 npc2.png
-    npcButton->setPosition(Vec2(800, 700));
-    float scaleFactor = 4.0f; // 根据需要调整缩放比例
-    npcButton->setScale(scaleFactor);
-    this->addChild(npcButton, 5);
+    // pass showDialog callback to NPCManager so UI is handled by UIManager
+    _npcManager = new NPCManager(this, [this]() {
+        if (characteraction) return characteraction->getPosition();
+        return Vec2::ZERO;
+    }, [this](const std::string& tex, const Vec2& pos, float dur) {
+        if (_uiManager) _uiManager->showNPCDialog(tex, pos, dur);
+    });
 
-    // 添加按钮点击事件监听器
-    npcButton->addTouchEventListener([this, npcButton](Ref* sender, Widget::TouchEventType type) {
-        if (type == Widget::TouchEventType::ENDED) {
-            // 获取 NPC 按钮和角色的横坐标
-            Vec2 npcPosition = npcButton->getPosition();
-            Vec2 characterPosition = characteraction->getPosition();
-            float distance = characterPosition.x - npcPosition.x; // 计算横坐标差值
+    NPCSpec npc1;
+    npc1.normalTexture = "bag/npc1.png";
+    npc1.selectedTexture = "bag/npc2.png";
+    npc1.position = Vec2(800, 700);
+    npc1.scale = 4.0f;
+    npc1.dialogTexture = "picture/dialog.png";
+    npc1.dialogPosition = Vec2(900, 400);
+    npc1.proximityThreshold = 100.0f;
+    _npcManager->spawnNPC(npc1);
 
-            // 如果横坐标差值小于 100，则执行逻辑
-            if (distance < 100) {
-                // 切换到 npc2.png
-                npcButton->loadTextureNormal("bag/npc2.png");
+    NPCSpec npc2;
+    npc2.normalTexture = "bag/npc3.png";
+    npc2.selectedTexture = "bag/npc4.png";
+    npc2.position = Vec2(4100, 650);
+    npc2.scale = 0.8f;
+    npc2.dialogTexture = "picture/dialog2.png";
+    npc2.dialogPosition = Vec2(4100, 400);
+    npc2.proximityThreshold = 100.0f;
+    _npcManager->spawnNPC(npc2);
 
-                // 弹出对话框
-                auto dialogBox = Sprite::create("picture/dialog.png"); // 替换为你的对话框图片路径
-                dialogBox->setPosition(Vec2(900, 400)); // 设置对话框位置
-                dialogBox->setScale(0.6f);
-                this->addChild(dialogBox, 6); // 确保对话框在 NPC 按钮上方
-
-                // 3 秒后移除对话框并恢复
-                auto delay = DelayTime::create(3.0f);
-                auto restoreNPC = CallFunc::create([npcButton]() {
-                    npcButton->loadTextureNormal("bag/npc1.png"); // 恢复为 npc1.png
-                    });
-                auto removeDialog = CallFunc::create([dialogBox]() {
-                    dialogBox->removeFromParent();
-                    });
-                auto sequence = Sequence::create(delay, restoreNPC, removeDialog, nullptr);
-                dialogBox->runAction(sequence);
-            }
-        }
-        });
-
-    // 创建 NPC2 
-    auto npcButton1 = Button::create("bag/npc3.png", "bag/npc4.png"); // 点击前为 npc1.png，点击后为 npc2.png
-    npcButton1->setPosition(Vec2(4100, 650));
-    npcButton1->setScale(0.8f);
-    this->addChild(npcButton1, 5);
-
-    // 添加按钮点击事件监听器
-    npcButton1->addTouchEventListener([this, npcButton1](Ref* sender, Widget::TouchEventType type) {
-        if (type == Widget::TouchEventType::ENDED) {
-            // 获取 NPC 按钮和角色的横坐标
-            Vec2 npcPosition1 = npcButton1->getPosition();
-            Vec2 characterPosition = characteraction->getPosition();
-            float distance = npcPosition1.x - characterPosition.x; // 计算横坐标差值
-
-            // 如果横坐标差值小于 100，则执行逻辑
-            if (distance < 100) {
-                npcButton1->loadTextureNormal("bag/npc4.png");
-
-                // 弹出对话框
-                auto dialogBox = Sprite::create("picture/dialog2.png"); // 替换为你的对话框图片路径
-                dialogBox->setPosition(Vec2(4100, 400)); // 设置对话框位置
-                dialogBox->setScale(0.6f);
-                this->addChild(dialogBox, 6); // 确保对话框在 NPC 按钮上方
-
-                // 3 秒后移除对话框并恢复
-                auto delay = DelayTime::create(3.0f);
-                auto restoreNPC = CallFunc::create([npcButton1]() {
-                    npcButton1->loadTextureNormal("bag/npc3.png"); // 恢复
-                    });
-                auto removeDialog = CallFunc::create([dialogBox]() {
-                    dialogBox->removeFromParent();
-                    });
-                auto sequence = Sequence::create(delay, restoreNPC, removeDialog, nullptr);
-                dialogBox->runAction(sequence);
-            }
-        }
-        });
-
-    struct tm* timeinfo;
-    time_t rawtime;
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
-
-
-    // 获取星期几
-    const char* days[] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-    std::stringstream ss;
-    ss << days[timeinfo->tm_wday] << ", ";
-    std::string dayOfWeek = ss.str();
-
-    // 获取当前时间（不包含秒）
-    char buffer[80];
-    std::strftime(buffer, sizeof(buffer), "%H:%M", timeinfo);
-    std::string currentTime = buffer;
-
-
-    auto dayLabel = Label::createWithTTF(dayOfWeek, "fonts/Marker Felt.ttf", 50);
-    dayLabel->setAnchorPoint(Vec2(1, 1));
-    dayLabel->setPosition(Vec2(3 * 1500, 3 * 1100 + 1450));//1400, 1553
-    
-   
-    this->addChild(dayLabel, 1);
-
-    auto timeLabel = Label::createWithTTF(currentTime, "fonts/Marker Felt.ttf", 40);
-    timeLabel->setPosition(Vec2(3 * 1500 - 125, 3 * 1100 + 1450 - 170));//1400, 1405
-    timeLabel->setName("timeLabel");
-    this->addChild(timeLabel, 1);
-
-    // 更新游戏内时间
-    schedule(schedule_selector(outside::updateTime), 1.0f);
+    // 启动全局时间发布器（每秒计算并发布游戏内时间）
+    TimePublisher::getInstance()->start(1.0f);
 
    
     // 创建签到窗口
@@ -351,105 +281,30 @@ bool outside::init()
 
     qiandaoWindow->setPosition(3 * 890 + 600, 3 * 740 + 1300);
     this->addChild(qiandaoWindow, 10); // 设置较高的z轴，确保窗口在最上层
-
-    // 创建签到按钮
-    auto qiandaoButton = Button::create("picture/bottom.png", "picture/bottom1.png");
-    qiandaoButton->setPosition(Vec2(qiandaoWindow->getContentSize().width / 2, qiandaoWindow->getContentSize().height / 4));
-    qiandaoButton->addTouchEventListener([qiandaoButton](Ref* sender, Widget::TouchEventType type) {
-        if (type == Widget::TouchEventType::ENDED) {
-            // 切换按钮图片
-            if (qiandaoButton->getRendererNormal()->getTexture() == Director::getInstance()->getTextureCache()->addImage("picture/bottom.png")) {
-                qiandaoButton->loadTextureNormal("picture/bottom1.png");
+            // 创建实体：由 EntityManager 根据地图上的 objects 对象组来生成（如果存在）
+            if (_entityManager) {
+                _entityManager->spawnFromMap(tiledMap);
             }
-            else {
-                qiandaoButton->loadTextureNormal("picture/bottom.png");
-            }
-        }
-        });
-    qiandaoWindow->addChild(qiandaoButton);
-
-    // 创建关闭按钮
-    auto closeButton = Button::create("picture/bottom2.png");
-    closeButton->setPosition(Vec2(qiandaoWindow->getContentSize().width - closeButton->getContentSize().width / 2, qiandaoWindow->getContentSize().height - closeButton->getContentSize().height / 2));
-    closeButton->addTouchEventListener([qiandaoWindow](Ref* sender, Widget::TouchEventType type) {
-        if (type == Widget::TouchEventType::ENDED) {
-            // 关闭签到窗口
-            qiandaoWindow->removeFromParentAndCleanup(true);
-        }
-        });
-    qiandaoWindow->addChild(closeButton);
-  
 
     //钓鱼
     auto fishing = Button::create("picture/tofish.png", "picture/tofish2.png");
     fishing->setPosition(Vec2(3 * 890 + 1000, 3 * 740 - 210));
     this->addChild(fishing,3);
-    _isfishingVisible = false;
     fishing->addTouchEventListener([this](Ref* sender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
-            
-            if (!_isfishingVisible&&!fishman&&!spriteFish) {//
-                fishImage = ImageView::create("picture/fishingback.png");
-                fishImage->setPosition(Vec2(3 * 890 + 500, 3 * 740 - 210));//400, 900
-                fishImage->setScale(0.9);
-                this->addChild(fishImage);
-
-                spriteFish = Sprite::create("character/fishman1.png");
-                if (spriteFish == nullptr) {
-                    CCLOG("spriteFish 未能成功创建!");
-                    return;
-                }
-                if (!spriteFish) {
-                    CCLOG("Failed to load spriteFish texture");
-                    return;
-                }
-                spriteFish->setPosition(Vec2(3 * 890 + 500 - 50, 3 * 740 - 210 + 100));//350, 1000
-                this->addChild(spriteFish);
-
-                Animation* Fishing = Animation::create();
-                for (int i = 1; i <= 5; i++)
-                {
-                    std::string frameName = "character/fishman" + std::to_string(i) + ".png";
-                    Fishing->addSpriteFrameWithFile(frameName);
-                }
-                Fishing->setDelayPerUnit(0.3f); // 设置每帧的播放时间
-                Fishing->setLoops(1); // 设置循环播放
-                Animate* FishingAnimate = Animate::create(Fishing);
-                Fishing->retain(); // 保留动画对象，防止被释放
-
-                spriteFish->runAction(FishingAnimate);
-                _isfishingVisible = true;
-
-            }
-            else {
-                if (fishImage) {
-                    this->removeChild(fishImage);
-                    fishImage = nullptr;
-                }
-                if (fishman) {
-                    this->removeChild(fishman);
-                    fishman = nullptr;
-                }
-                if (spriteFish) {
-                    //spriteFish->stopAllActions();
-                    this->removeChild(spriteFish);
-                    spriteFish = nullptr;
-                }
-                _isfishingVisible = false;
-
+            if (_uiManager) {
+                _uiManager->toggleFishing();
             }
         }
-        });
+    });
     
   
     this->scheduleUpdate();
-     // ==================== Observer:Add global event observer registration ====================
-    EventCenter::getInstance()->attach(this);
 
     return true;
 }
-// ==================== Observer:updateTime modified to “publish MinuteChanged event” ====================
-//**updateTime only generates time data and publishes the event; UI updates are handled inside onNotify//
+// ==================== 使用观察者模式重构修改updateTime函数：改为“发布 MinuteChanged 事件” ====================
+//**updateTime 只负责“产生时间数据 + 发布事件”;具体 UI 更新放到 onNotify 中//
 
 void outside::updateTime(float dt) {
 
@@ -472,11 +327,11 @@ void outside::updateTime(float dt) {
     char buffer[80];
     std::strftime(buffer, sizeof(buffer), "%H:%M", timeinfo);
 
-    // new:instead of directly modifying the Label here, publish the MinuteChanged event
+    // ★ 新增：不在这里直接改 Label，而是发布 MinuteChanged 事件
     cocos2d::Value timeStr(buffer);
     EventCenter::getInstance()->publish(EventType::MinuteChanged, this, timeStr);
 }
-// ==================== Observer:Add onNotify function: responsible for performing the actual UI update ====================
+// ==================== 使用观察者模式重构新增onNotify函数：真正处理 UI 更新” ====================
 
 void outside::onNotify(const EventData& event)
 {
@@ -583,386 +438,65 @@ void outside::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 
 void outside::hidePersonalInterface()
 {
-    // 隐藏个人界面的逻辑
-    if (_personalInterfaceLayer)
-    {
-        this->removeChild(_personalInterfaceLayer); // 移除个人界面层
-        _personalInterfaceLayer = nullptr; // 清空层指针
-    }
-    _isPersonalInterfaceVisible = false;
+    if (_uiManager) _uiManager->hidePersonalInterface();
 }
-
-
 void outside::showPersonalInterface()
 {
-    if (_isPersonalInterfaceVisible) return;
-
-    _isPersonalInterfaceVisible = true;
-
-    // 创建个人界面层
-    _personalInterfaceLayer = Layer::create();
-    this->addChild(_personalInterfaceLayer, 10); // 确保这个层在其他层之上
-
-    // 加载初始图片窗口
-    _menuWindow = Sprite::create("bag/1.png");
-
-    Vec2 characterPosition = characteraction->getPosition();
-
-    // 将菜单设置为屏幕中央
-    _menuWindow->setPosition(characterPosition);
-
-    // 设置窗口大小
-    _menuWindow->setScale(1.0f);
-
-    _personalInterfaceLayer->addChild(_menuWindow);
-
-    // 创建关闭按钮
-    _closeButton = MenuItemImage::create(
-        "picture/bottom2.png",
-        "picture/bottom2.png",
-        CC_CALLBACK_1(outside::closePersonalInterface, this) // 使用 CC_CALLBACK_1 绑定 this
-    );
-
-    // 设置关闭按钮的位置
-    auto windowSize = _menuWindow->getContentSize();
-    _closeButton->setPosition(Vec2(windowSize.width - _closeButton->getContentSize().width / 2 + 60, windowSize.height - _closeButton->getContentSize().height / 2 + 60)); // 在窗口内适当位置
-
-    // 创建菜单并添加关闭按钮
-    auto closeMenu = Menu::create(_closeButton, NULL);
-    closeMenu->setPosition(Vec2::ZERO);
-    _menuWindow->addChild(closeMenu);
-
-    // 创建顶部的选择按钮
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    auto buttonMenu = Menu::create();
-
-    for (int i = 1; i <= 7; ++i)
-    {
-        std::string buttonNormal = StringUtils::format("picture/%d%d.png", i, i);
-        std::string buttonSelected = StringUtils::format("picture/%d%d.png", i, i);
-
-        auto button = MenuItemImage::create(
-            buttonNormal,
-            buttonSelected,
-            [this, i](Ref* sender) {
-                selectImage(i);
-            }
-        );
-
-        // 设置按钮的初始位置
-        button->setPosition(Vec2(characterPosition.x - 1600 + 80 * i, characterPosition.y - 170));
-        buttonMenu->addChild(button, 0, i);
-    }
-
-    buttonMenu->setPosition(visibleSize / 2);
-    _personalInterfaceLayer->addChild(buttonMenu, 1);
+    if (_uiManager) _uiManager->showPersonalInterface(characteraction ? characteraction->getPosition() : Vec2::ZERO);
 }
-
-
 
 void outside::selectImage(int index)
 {
-    _currentImageIndex = index;
-
-    removeVerticalButtons();
-
-    // 更新主图片
-    std::string imageName = StringUtils::format("bag/%d.png", _currentImageIndex);
-
-    // 如果当前选择的图片是 3.png，则显示竖排按钮
-    if (index == 1) // 假设在选择 1.png 时添加可拖动的图片
-    {
-        // 获取当前窗口的大小
-        auto windowSize = _menuWindow->getContentSize();
-
-        // 获取 _menuWindow 的位置
-        Vec2 menuWindowPosition = _menuWindow->getPosition();
-
-        auto draggableSprite = Sprite::create("bag/tool1.png");
-
-        float scaleFactor = 4.0f; // 根据需要调整缩放比例
-        draggableSprite->setScale(scaleFactor);
-
-        // 设置精灵的位置为 _menuWindow 的中心位置
-        draggableSprite->setPosition(Vec2(windowSize.width - 200, windowSize.height - 300));
-
-        _menuWindow->addChild(draggableSprite, 10);
-
-
-        // 添加垃圾桶
-        auto trashCanSprite = Sprite::create("bag/trashcan.png");
-        trashCanSprite->setPosition(Vec2(windowSize.width + 50, windowSize.height - 500)); // 设置垃圾桶位置
-        _menuWindow->addChild(trashCanSprite);
-
-        // 设置拖动事件
-        auto listener = EventListenerTouchOneByOne::create();
-        listener->setSwallowTouches(true);
-
-        // 开始拖动
-        listener->onTouchBegan = [=](Touch* touch, Event* event) {
-            auto target = static_cast<Sprite*>(event->getCurrentTarget());
-            Vec2 touchPoint = target->convertToNodeSpace(touch->getLocation());
-            Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
-            if (rect.containsPoint(touchPoint))
-            {
-                return true;
-            }
-            return false;
-            };
-
-        // 拖动中
-        listener->onTouchMoved = [=](Touch* touch, Event* event) {
-            auto target = static_cast<Sprite*>(event->getCurrentTarget());
-            target->setPosition(target->getPosition() + touch->getDelta());
-            };
-
-        // 拖动结束
-        listener->onTouchEnded = [=](Touch* touch, Event* event) {
-            auto target = static_cast<Sprite*>(event->getCurrentTarget());
-            Vec2 endPosition = target->getPosition();
-
-            // 检测是否拖动到垃圾桶位置
-            Rect trashCanRect = trashCanSprite->getBoundingBox();
-            if (trashCanRect.containsPoint(endPosition))
-            {
-                // 移除可拖动的图片
-                target->removeFromParentAndCleanup(true);
-            }
-            };
-
-        // 注册事件监听器
-        _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, draggableSprite);
-
-        // 显示 money 变量
-        int money = 500; // 初始值为 500
-        auto moneyLabel = Label::createWithSystemFont(StringUtils::format("%d", money), "Arial", 30);
-        moneyLabel->setColor(Color3B::BLACK); // 设置字体颜色为白色
-        moneyLabel->setPosition(Vec2(windowSize.width / 2 + 200, windowSize.height / 2 - 110)); // 设置位置为窗口中心
-        _menuWindow->addChild(moneyLabel, 20); // 添加到 _menuWindow，层级高于其他元素
-
-
-    }
-    else if (_currentImageIndex == 3)
-    {
-        showVerticalButtons();
-    }
-    else if (_currentImageIndex == 7) {
-        showVerticalButtons2();
-    }
-
-
-    if (_menuWindow)
-    {
-        _menuWindow->setTexture(imageName);
-    }
-
-    // 获取菜单按钮
-    auto buttonMenu = dynamic_cast<Menu*>(_personalInterfaceLayer->getChildByTag(1));
-    if (!buttonMenu) return;
-
-    // 遍历所有按钮，更新按钮的位移效果
-    for (int i = 1; i <= 7; ++i)
-    {
-        auto button = dynamic_cast<MenuItemImage*>(buttonMenu->getChildByTag(i));
-        if (button)
-        {
-            if (i == index)
-            {
-                button->setPositionY(button->getPositionY() - 10); // 下移效果
-            }
-            else
-            {
-                button->setPositionY(button->getPositionY() + 10); // 恢复初始位置
-            }
-        }
-    }
+    if (_uiManager) _uiManager->selectImage(index);
 }
-
 
 void outside::showVerticalButtons()
 {
-    // 获取当前窗口的大小
-    auto windowSize = _menuWindow->getContentSize();
-
-    // 创建一个层来放置按钮
-    auto buttonLayer = Layer::create();
-    buttonLayer->setName("buttonLayer"); // 设置层的名称，确保可以被正确捕捉
-    _menuWindow->addChild(buttonLayer);
-
-    // 在 3.png 图片上竖排放置 5 个按钮 bottom3.1.png
-    for (int i = 1; i <= 5; ++i)
-    {
-        auto button = Button::create("picture/giftbottom1.png", "picture/giftbottom1.png");
-        button->setPosition(Vec2(windowSize.width / 2 + 300, windowSize.height + 90 - 125 * i)); // 竖直排列
-        button->setTag(i); // 为按钮设置唯一的 Tag
-        button->addTouchEventListener([this, i](Ref* sender, Widget::TouchEventType type) {
-            if (type == Widget::TouchEventType::ENDED) {
-                _clickedButtonIndex = i; // 记录点击的按钮位置
-                showNewWindow(); // 点击按钮后跳出新的窗口
-            }
-            });
-        buttonLayer->addChild(button);
-    }
+    if (_uiManager) _uiManager->showVerticalButtons();
 }
 
 
 void outside::showVerticalButtons2()
 {
-    // 获取当前窗口的大小
-    auto windowSize = _menuWindow->getContentSize();
+    if (_uiManager) _uiManager->showVerticalButtons2();
 
-    // 创建一个层来放置按钮
-    auto buttonLayer = Layer::create();
-    buttonLayer->setName("buttonLayer"); // 设置层的名称，确保可以被正确捕捉
-    _menuWindow->addChild(buttonLayer);
-
-    // 在 6.png 图片上竖排放置 4 个按钮 bottom3.1.png
-    for (int i = 1; i <= 4; ++i)
-    {
-        auto button = Button::create("picture/bottom.png", "picture/bottom2.png");
-        button->setPosition(Vec2(windowSize.width / 6 - 90, windowSize.height - 70 - 90 * i)); // 竖直排列
-        button->setTag(i);
-
-        // 添加触摸事件监听器
-        button->addTouchEventListener([this, button](Ref* sender, Widget::TouchEventType type) {
-            // 判断触摸事件类型
-            if (type == Widget::TouchEventType::ENDED) {
-                // 切换按钮状态
-                if (button->getRendererNormal()->getTexture() == Director::getInstance()->getTextureCache()->addImage("picture/bottom.png")) {
-                    button->loadTextureNormal("picture/bottom2.png");
-                }
-                else {
-                    button->loadTextureNormal("picture/bottom.png");
-                }
-            }
-            });
-
-        buttonLayer->addChild(button);
-    }
-}
 
 
 void outside::removeVerticalButtons()
 {
-    // 移除所有竖排按钮
-    _menuWindow->removeAllChildrenWithCleanup(true);
+    if (_uiManager) _uiManager->removeVerticalButtons();
 }
 
 void outside::showNewWindow()
 {
-    // 创建新的窗口
-    auto newWindow = Sprite::create("picture/back.png");
-
-    Vec2 characterPosition = characteraction->getPosition();
-
-    // 将菜单设置为屏幕中央
-    newWindow->setPosition(characterPosition);
-    newWindow->setScale(1.0f);
-
-    // 添加到个人界面层
-    _personalInterfaceLayer->addChild(newWindow, 11); // 确保新窗口在最上层
-
-    // 创建关闭新窗口的按钮
-    auto closeNewWindowButton = Button::create("picture/ok1.png", "picture/ok1.png");
-    float scaleFactor = 1.5f; // 根据需要调整缩放比例
-    closeNewWindowButton->setScale(scaleFactor);
-    closeNewWindowButton->setPosition(Vec2(newWindow->getContentSize().width - closeNewWindowButton->getContentSize().width / 2 - 100, newWindow->getContentSize().height - closeNewWindowButton->getContentSize().height / 2 - 800));
-    closeNewWindowButton->addTouchEventListener([newWindow, this](Ref* sender, Widget::TouchEventType type) {
-        if (type == Widget::TouchEventType::ENDED) {
-            // 关闭新窗口
-            newWindow->removeFromParent();
-
-            // 获取按钮层
-            auto buttonLayer = dynamic_cast<Layer*>(_menuWindow->getChildByName("buttonLayer"));
-            if (buttonLayer) {
-                auto giftButton = dynamic_cast<Button*>(buttonLayer->getChildByTag(_clickedButtonIndex));
-                if (giftButton) {
-                    // 获取当前按钮的点击次数
-                    int clickCount = _buttonClickCounts[_clickedButtonIndex]++;
-                    // 根据点击次数决定是否添加对号按钮
-                    if (clickCount < 2) {
-                        auto bottomButton = Button::create("picture/bottom1.png", "picture/bottom1.png");
-                        float scaleFactor = 0.8f; // 根据需要调整缩放比例
-                        bottomButton->setScale(scaleFactor);
-
-                        // 根据点击次数调整对号按钮的位置
-                        float offsetX = clickCount * 48; // 每次点击向右偏移 30 像素
-                        bottomButton->setPosition(Vec2(giftButton->getPositionX() - 30 + offsetX, giftButton->getPositionY() - 57));
-
-                        buttonLayer->addChild(bottomButton);
-                    }
-                    if (clickCount == 2) {
-
-                        auto popupImage = Sprite::create("bag/back.png"); // 替换为你的弹出图片路径 
-                        popupImage->setPosition(Vec2(giftButton->getPositionX() - 30, giftButton->getPositionY() - 57));
-                        popupImage->setScale(0.5f);
-                        buttonLayer->addChild(popupImage);
-
-                        // 5秒后移除弹出图片
-                        auto delay = DelayTime::create(2.0f);
-                        auto removePopup = CallFunc::create([popupImage]() {
-                            popupImage->removeFromParent();
-                            });
-                        auto sequence = Sequence::create(delay, removePopup, nullptr);
-                        popupImage->runAction(sequence);
-                    }
-                }
-            }
-            else {
-                CCLOG("Error: buttonLayer not found!");
-            }
-        }
-        });
-    newWindow->addChild(closeNewWindowButton);
-
-    // 创建6个按钮并横向排列
-    std::vector<Button*> giftButtons;
-    for (int i = 1; i <= 6; ++i) {
-        auto giftButton = Button::create("picture/gift" + std::to_string(i) + ".png", "picture/gift" + std::to_string(i) + ".png");
-        float scaleFactor = 3.0f; // 根据需要调整缩放比例
-        giftButton->setScale(scaleFactor);
-        giftButton->setPosition(Vec2(100 + (i - 1) * 150, 800)); // 横向排列，每个按钮间隔150像素
-        giftButton->addTouchEventListener([newWindow, &giftButtons](Ref* sender, Widget::TouchEventType type) {
-            if (type == Widget::TouchEventType::ENDED) {
-                auto button = static_cast<Button*>(sender);
-                // 处理按钮点击事件
-            }
-            });
-        newWindow->addChild(giftButton);
-        giftButtons.push_back(giftButton);
-
-        // 在每个按钮下面添加一个 bottom.png 按钮
-        auto bottomButton = Button::create("picture/bottom.png", "picture/bottom1.png");
-        bottomButton->setPosition(Vec2(giftButton->getPositionX(), giftButton->getPositionY() - 100)); // 在按钮下方100像素处
-        bottomButton->addTouchEventListener([bottomButton](Ref* sender, Widget::TouchEventType type) {
-            if (type == Widget::TouchEventType::ENDED) {
-                // 切换按钮状态
-                if (bottomButton->getRendererNormal()->getTexture() == Director::getInstance()->getTextureCache()->addImage("picture/bottom.png")) {
-                    bottomButton->loadTextureNormal("picture/bottom1.png");
-                }
-                else {
-                    bottomButton->loadTextureNormal("picture/bottom.png");
-                }
-            }
-            });
-        newWindow->addChild(bottomButton);
-    }
+    if (_uiManager) _uiManager->showNewWindow(_clickedButtonIndex);
 }
 
 
 void outside::closePersonalInterface(Ref* sender)
 {
-    if (!_isPersonalInterfaceVisible) return;
-
-    _isPersonalInterfaceVisible = false;
-
-    // 移除个人界面层
-    _personalInterfaceLayer->removeFromParent();
-    _personalInterfaceLayer = nullptr;
+    if (_uiManager) _uiManager->hidePersonalInterface();
 }
 
- // ==================== Observer:Add unregister from the EventCenter ====================
+ // ==================== 使用观察者模式重构新增：从事件中心注销 ====================
 outside::~outside()
 {
     EventCenter::getInstance()->detach(this);
+    if (_uiManager) {
+        delete _uiManager;
+        _uiManager = nullptr;
+    }
+    if (_inputManager) {
+        delete _inputManager;
+        _inputManager = nullptr;
+    }
+    if (_npcManager) {
+        delete _npcManager;
+        _npcManager = nullptr;
+    }
+    if (_entityManager) {
+        _entityManager->clearAll();
+        _entityManager->removeFromParentAndCleanup(true);
+        _entityManager = nullptr;
+    }
 }

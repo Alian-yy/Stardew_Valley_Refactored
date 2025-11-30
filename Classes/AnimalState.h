@@ -13,8 +13,6 @@
 #include <memory>
 USING_NS_CC;
 
-class Animal;
-
 class AnimalState {
 public:
     virtual ~AnimalState() = default;

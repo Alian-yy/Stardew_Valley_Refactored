@@ -1,17 +1,16 @@
 ﻿/****************************************************************************
  *
- * Refactored with Observer Pattern，the Factory Pattern and the Object Pool Pattern,
+ * Refactored with Factory Method, Object Pool and Observer design patterns.
  *
  ****************************************************************************/
-#include "Crop.h"
+#include "Plantingcrops.h"
 #include "SimpleAudioEngine.h"
 #include "intovalley.h"
 #include "GameTimeSystem.h"
-#include "Plantingcrops.h"
 #include "characterAction.h"
-// ==================== Observer ====================
-#include "EventCenter.h"   
-#include "EventType.h"     
+ // ==================== Observer Pattern: New Additions ====================
+#include "EventCenter.h"   // New addition
+#include "EventType.h"     // New addition
 
 USING_NS_CC;
 
@@ -28,7 +27,7 @@ Crop::~Crop() {}
 Crop* Crop::create()
 {
     auto crop = new (std::nothrow) Crop();
-    if (crop && crop->init("plant/cropseed.png")) {   
+    if (crop && crop->init("plant/cropseed.png")) {
         crop->autorelease();
         return crop;
     }
@@ -52,71 +51,72 @@ bool Crop::init(const std::string& filename)
     return true;
 }
 
-// ==================== 对象池模式：新增resetState ====================
+// ==================== Object Pool Pattern: Add resetState ====================
 /**
-* 作物状态重置（用于复用）
+* Reset crop state (for reuse)
 */
 void Crop::resetState() {
-    // 重置生长状态参数
+    // Reset growth state parameters
     state = State::seed;
     growthTime = 0;
     pregrowthTime = 0;
     watered = false;
 
-    // 重置视觉表现（恢复种子纹理）
+    // Reset visual appearance (restore seed texture)
     this->setTexture("plant/cropseed.png");
     this->setVisible(true);
 
-    // 停止所有动作并重新开启更新（确保生长逻辑正常）
+    // Stop all actions and restart update (ensure normal growth logic)
     this->stopAllActions();
     if (!this->isScheduledUpdate()) {
         this->scheduleUpdate();
     }
 }
 
-// ==================== Observer：refactor update ====================
- 
+// ==================== Observer Pattern: Refactored update Function ====================
+
+
 void Crop::update(float delta) {
-    // 1）未浇水，超过 2 倍成熟时间直接死亡
+    // 1) If not watered and exceeds 2x mature time, die directly
     if (growthTime >= matureTime * 2 && state != State::harvested
         && watered == false) {
         this->setTexture("plant/cropdead.png");
         state = State::dead;
 
-        //Add: publish "CropDead" event
+        // ★ New addition: Notify "Crop Dead" event
         EventCenter::getInstance()->publish(EventType::CropDead, this);
     }
 
-    // 2）种子阶段 -> 发芽(growing)
+    // 2) Seed phase -> Germination (growing)
     if (state == State::seed) {
         growthTime += delta;
         if (growthTime >= matureTime) {
             state = State::growing;
             this->setTexture("plant/cropgrowing.png");
 
-            //Add: publish "CropGerminated" event
+            // ★ New addition: Notify "Crop Germinated" event
             EventCenter::getInstance()->publish(EventType::CropGerminated, this);
         }
     }
-    // 3）生长期 -> 成熟(matured)
+    // 3) Growing phase -> Mature (matured)
     else if (state == State::growing) {
         growthTime += delta;
         if (growthTime >= matureTime * 2) {
             state = State::matured;
             this->setTexture("plant/cropmature.png");
 
-            //Add: publish "CropMatured" event
+            // ★ New addition: Notify "Crop Matured" event
             EventCenter::getInstance()->publish(EventType::CropMatured, this);
-        } 
+        }
     }
-    // 4）成熟阶段 -> 逾期未被收获而被系统自动回收
+    // 4) Mature phase -> Automatically recycled by system if not harvested overdue
     else if (state == State::matured) {
         growthTime += delta;
         if (growthTime >= matureTime * 3) {
             state = State::harvested;
             this->setTexture("plant/cropharvested.png");
 
-            //Add: publish "CropHarvested" event (auto lifecycle end)
+            // ★ New addition: Notify "Crop Harvested (auto lifecycle end)" event
             EventCenter::getInstance()->publish(EventType::CropHarvested, this);
         }
     }
@@ -135,15 +135,14 @@ void Crop::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
         watered = true;
 }
 
-// ==================== 对象池模式：新增harvest ====================
+// ==================== Object Pool Pattern: Add harvest ====================
 /**
-* 作物收获与回收
+* Crop harvesting and recycling
 */
-// ==================== Observer：Add manual-harvest event. ====================
-//Completed the missing core event flow, enabling external modules to perceive the key action: crop being harvested.
+// ==================== Observer Pattern: Add Manual Harvest Event ====================
 void Crop::harvest()
 {
-    if (state == State::harvested || state == State::dead) {
+    if (state == State::matured) {
         Vec2 pos = this->getPosition();
         int gridX = pos.x / gridWidth;
         int gridY = pos.y / gridHeight;
@@ -151,16 +150,16 @@ void Crop::harvest()
         Vec2 grid(gridX, gridY);
         cropPositions[grid] = false;
 
-        //Add manual-harvest event.
+        // ★ New addition: Manual harvest event
         EventCenter::getInstance()->publish(EventType::CropHarvested, this);
 
         this->removeFromParent();
-        // 收获后回收到对象池（而非直接销毁）
-        recycleCrop(this); // 调用对象池的回收函数
+        // Recycle to object pool after harvesting (instead of direct destruction)
+        recycleCrop(this); // Call object pool's recycle function
     }
 }
 
-// ==================== 工厂模式: 新增CropFactory ====================
+// ==================== Factory Pattern: Add CropFactory ====================
 Crop* CropFactory::createCrop(const std::string& cropType)
 {
     auto crop = Crop::create();
@@ -186,14 +185,14 @@ Crop* CropFactory::createCrop(const std::string& cropType)
     return crop;
 }
 
-// ==================== 工厂模式：新增configureCrop ====================
+// ==================== Factory Pattern: Add configureCrop ====================
 /**
-* 作物配置（用于对象池复用初始化）
+* Crop configuration (for object pool reuse initialization)
 */
 void CropFactory::configureCrop(Crop* crop, const std::string& cropType) {
     if (!crop) return;
 
-    crop->resetState(); // 先重置状态，再配置类型属性
+    crop->resetState(); // Reset state first, then configure type attributes
     if (cropType == "wheat") {
         crop->setInitialTexture("plant/wheat_seed.png");
         crop->setMatureTime(3.0);

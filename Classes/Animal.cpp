@@ -136,22 +136,37 @@ bool Parrot::init(const std::string& filename) {
     return true;
 }
 
-// ==================== Factory Method ====================
-Animal* AnimalFactory::createAnimal(const std::string& filename)
-{
-    std::string lower = filename;
-    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+// ====================Factory Pattern: add AnimalFactoryManager====================
 
-    if (lower.find("sheep") != std::string::npos) {
-        return Sheep::create(filename);
-    }
-    else if (lower.find("cow") != std::string::npos) {
-        return Cow::create(filename);
-    }
-    else if (lower.find("parrot") != std::string::npos) {
-        return Parrot::create(filename);
-    }
 
-    CCLOG("SimpleAnimalFactory: Unknown animal type for file: %s", filename.c_str());
+Animal* SheepFactory::createAnimal(const std::string& filename) {
+    return Sheep::create(filename);
+}
+Animal* CowFactory::createAnimal(const std::string& filename) {
+    return Cow::create(filename);
+}
+Animal* ParrotFactory::createAnimal(const std::string& filename) {
+    return Parrot::create(filename);
+}
+
+void AnimalFactoryManager::registerFactory(const std::string& animalType, std::unique_ptr<AnimalFactory> factory) {
+    factories[animalType] = std::move(factory);
+}
+
+Animal* AnimalFactoryManager::createAnimal(const std::string& animalType, const std::string& filename) {
+    auto it = factories.find(animalType);
+    if (it != factories.end() && it->second) {
+        return it->second->createAnimal(filename);
+    }
+    CCLOG("AnimalFactoryManager: Unknown animal type: %s", animalType.c_str());
     return nullptr;
+}
+
+void AnimalFactoryManager::initializeFactories() {
+    // Register all known animal factories
+    registerFactory("sheep", std::make_unique<SheepFactory>());
+    registerFactory("cow", std::make_unique<CowFactory>());
+    registerFactory("parrot", std::make_unique<ParrotFactory>());
+
+    CCLOG("AnimalFactoryManager: All factories initialized");
 }
