@@ -1,6 +1,6 @@
 /****************************************************************************
  * 
- * GameSceneFacade.h refactored using Facade Pattern + Adapter Pattern
+ * Refactored with Facade Pattern + Adapter Pattern:add GameSceneFacade.h
  * 
  ****************************************************************************/
 
