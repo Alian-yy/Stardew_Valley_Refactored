@@ -8,17 +8,18 @@
 #ifndef __EVENT_TYPE_H__
 #define __EVENT_TYPE_H__
 
-// 根据 valley-main 现有事件整理出的事件类型：
-// - 作物成长阶段变化（发芽 / 成长 / 成熟 / 枯萎）
-// - 作物被收获
-// - 游戏时间更新（分钟标签变化）
+// Event types derived from the existing valley-main event system:
+// - Crop growth stage transitions (germination / growing / matured / dead)
+// - Crop being harvested
+// - Game time updates (minute label changes)
 enum class EventType {
-    MinuteChanged,   // outside::updateTime 中每次更新时间
+    MinuteChanged,   // Triggered each time outside::updateTime updates the time
     CropGerminated,  // Crop: seed -> growing
-    CropGrowing,     // Crop: growing 中间过程（可选事件）
+    CropGrowing,     // Crop: intermediate growing stage (optional event)
     CropMatured,     // Crop: growing -> matured
-    CropHarvested,   // 作物被系统或玩家收获
-    CropDead         // 作物因未浇水死亡
+    CropHarvested,   // Crop harvested by system or player
+    CropDead         // Crop dies due to lack of watering
 };
 
 #endif // __EVENT_TYPE_H__
+

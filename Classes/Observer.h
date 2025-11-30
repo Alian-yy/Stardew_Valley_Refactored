@@ -10,7 +10,7 @@
 
 #include "EventData.h"
 
-// 观察者抽象接口，所有需要“监听事件”的类都要实现这个接口
+// Abstract observer interface; any class that needs to listen to events must implement this
 class Observer {
 public:
     virtual ~Observer() {}

@@ -4,7 +4,6 @@
  *
  ********************************************************************************/
 
-
 // EventCenter.h
 #ifndef __EVENT_CENTER_H__
 #define __EVENT_CENTER_H__
@@ -14,17 +13,17 @@
 
 
 
-// 统一事件中心（单例）：负责维护观察者列表并分发事件
+// Centralized event dispatcher (singleton): maintains the observer list and distributes events
 class EventCenter : public cocos2d::Ref {
 public:
-    // 获取全局唯一实例
+    // Retrieve the global unique instance
     static EventCenter* getInstance();
 
-    // 注册 / 取消注册 观察者
+    // Register / unregister observers
     void attach(Observer* observer);
     void detach(Observer* observer);
 
-    // 发布事件（两种重载）
+    // Publish events (two overloads)
     void publish(const EventData& event);
     void publish(EventType type, void* sender,
                  const cocos2d::Value& extra = cocos2d::Value());
@@ -37,8 +36,9 @@ private:
 
     static EventCenter* _instance;
 
-    // 使用 cocos2d::Vector 管理指针，和引擎内存模型一致
+    // Manage pointers using cocos2d::Vector to align with the engine's memory model
     cocos2d::Vector<Observer*> _observers;
 };
 
 #endif // __EVENT_CENTER_H__
+

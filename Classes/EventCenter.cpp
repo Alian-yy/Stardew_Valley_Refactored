@@ -14,7 +14,7 @@ EventCenter* EventCenter::getInstance()
     if (!_instance) {
         _instance = new (std::nothrow) EventCenter();
         if (_instance && _instance->init()) {
-            _instance->retain(); // 避免被 Cocos2d-X 自动释放
+            _instance->retain(); // Prevent Cocos2d-X from auto-releasing this singleton
         } else {
             CC_SAFE_DELETE(_instance);
         }
@@ -52,7 +52,7 @@ void EventCenter::detach(Observer* observer)
 
 void EventCenter::publish(const EventData& event)
 {
-    // 简单遍历通知所有观察者
+    // Notify all registered observers
     for (auto obs : _observers) {
         if (obs) {
             obs->onNotify(event);
