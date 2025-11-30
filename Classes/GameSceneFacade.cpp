@@ -1,6 +1,7 @@
 /****************************************************************************
  * 
  * Refactored with Facade Pattern + Adapter Pattern
+ * GameSceneFacade.cpp
  * 
  ****************************************************************************/
 
@@ -16,11 +17,11 @@ SceneAdapterManager* GameSceneFacade::getAdapterManager() {
 
 // ==================== Facade Pattern: New runWithBeginScene ====================
 // ==================== Adapter Pattern: Create scene through adapter ====================
-//启动游戏，运行开场场景
+// Starts the game, running the beginning scene
 
 void GameSceneFacade::runWithBeginScene()
 {
-    // 使用适配器创建场景，不再直接依赖 valleybegin 类
+    // Create scene using adapter, no longer directly depends on valleybegin class
     Scene* scene = getAdapterManager()->createScene("ValleyBegin");
     if (scene) {
         Director::getInstance()->runWithScene(scene);
@@ -29,7 +30,7 @@ void GameSceneFacade::runWithBeginScene()
 
 // ==================== Facade Pattern: New showMenuScene ====================
 // ==================== Adapter Pattern: Create scene through adapter ====================
-//从开场场景切换到菜单场景（带过渡动画）
+// Switches from the beginning scene to the menu scene (with transition animation)
  
 void GameSceneFacade::showMenuScene()
 {
@@ -42,7 +43,7 @@ void GameSceneFacade::showMenuScene()
 
 // ==================== Facade Pattern: New enterFarmScene ====================
 // ==================== Adapter Pattern: Create scene through adapter, pass parameters ====================
-//从菜单场景进入农场场景
+// Enters the farm scene from the menu scene
 void GameSceneFacade::enterFarmScene(int mapIndex)
 {
     // Create scene using adapter, pass parameters through ValueMap
@@ -58,7 +59,7 @@ void GameSceneFacade::enterFarmScene(int mapIndex)
 
 // ==================== Facade Pattern: New enterHouseScene ====================
 // ==================== Adapter Pattern: Create scene through adapter ====================
-//从农场场景进入房屋场景
+// Enters the house scene from the farm scene
 void GameSceneFacade::enterHouseScene()
 {
     // Create scene using adapter, no longer directly depends on intovalley class
@@ -70,7 +71,7 @@ void GameSceneFacade::enterHouseScene()
 
 // ==================== Facade Pattern: New enterOtherAreaScene ====================
 // ==================== Adapter Pattern: Create scene through adapter ====================
-//从农场场景进入其他区域场景
+// Enters another area scene from the farm scene
 
 void GameSceneFacade::enterOtherAreaScene()
 {
@@ -82,7 +83,7 @@ void GameSceneFacade::enterOtherAreaScene()
 }
 
 // ==================== Facade Pattern: New returnToPreviousScene ====================
-//从子场景（房屋/其他区域）返回到上一个场景
+// Returns to the previous scene from a sub-scene (house/other area)
 
 void GameSceneFacade::returnToPreviousScene()
 {
@@ -90,4 +91,3 @@ void GameSceneFacade::returnToPreviousScene()
         Director::getInstance()->popScene();
     }
 }
-
